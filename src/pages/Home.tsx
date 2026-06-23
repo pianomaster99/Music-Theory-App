@@ -8,10 +8,22 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { course } from '@/content/course'
+import { useAuth } from '@/lib/auth/AuthProvider'
 
 export default function Home() {
+  const { user, signOutUser } = useAuth()
+  const firstName = user?.displayName?.split(' ')[0]
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
+      <div className="mb-6 flex items-center justify-between text-ink-soft">
+        <span className="font-display text-lg text-ink">
+          {firstName ? `Ahoy, ${firstName}` : 'Ahoy'}
+        </span>
+        <Button variant="ghost" size="sm" onClick={() => void signOutUser()}>
+          Sign out
+        </Button>
+      </div>
       <header className="mb-10 text-center">
         <p className="text-sm uppercase tracking-widest text-ink-soft">
           A learn-by-doing chart

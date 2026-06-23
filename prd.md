@@ -22,6 +22,7 @@ Pianomaster99's functionality includes
     1. For the hand, I want a hyper realistic design
     1. For the buttons, I want typical modern round 3D buttons.
     1. For the text, I want medieval hand writing that is still easily legible.
+    1. The staff should look like drawings from old treasure map
     1. For the background, I want many templates, that could be taken from internet.  
     Examples:
         - Outerspace
