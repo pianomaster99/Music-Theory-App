@@ -9,8 +9,8 @@ export default function StaffDemo() {
   const [moved, setMoved] = useState<Pitch>(pitch('E', 4))
 
   const notes: StaffNote[] = [
-    { id: 'base', pitch: base, tone: 'muted' },
-    { id: 'moved', pitch: moved, draggable: true, tone: 'primary' },
+    { id: 'base', pitch: base, tone: 'given' },
+    { id: 'moved', pitch: moved, draggable: true, tone: 'answer' },
   ]
 
   const interval = intervalBetween(base, moved)

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useId, useRef, useState } from 'react'
 import {
   BOTTOM_LINE_STEP,
   TREBLE_LINE_STEPS,
@@ -12,8 +12,7 @@ export interface StaffNote {
   id: string
   pitch: Pitch
   draggable?: boolean
-  /** Tailwind text/fill color class fragment, e.g. "primary" or "muted-foreground". */
-  tone?: 'foreground' | 'primary' | 'muted'
+  tone?: 'given' | 'answer'
 }
 
 export interface StaffProps {
@@ -26,23 +25,24 @@ export interface StaffProps {
 
 const STEP_PX = 9
 const LINE_GAP = STEP_PX * 2
-const PADDING_TOP = 30
-const PADDING_BOTTOM = 30
-const CLEF_X = 26
-const FIRST_NOTE_X = 92
-const NOTE_SPACING = 58
-const NOTE_RX = 8
-const NOTE_RY = 6.5
-const VIEW_WIDTH = 340
+const PADDING_TOP = 34
+const PADDING_BOTTOM = 34
+const CLEF_X = 22
+const CLEF_SAFE_X = 70
+const FIRST_NOTE_X = 104
+const NOTE_SPACING = 60
+const NOTE_RX = 8.5
+const NOTE_RY = 7
+const VIEW_WIDTH = 360
+const RIGHT_EDGE = VIEW_WIDTH - 18
 const DRAG_THRESHOLD = 4
 
 const DEFAULT_MIN_STEP = 25 // G3
 const DEFAULT_MAX_STEP = 43 // D6
 
 const TONE_FILL: Record<NonNullable<StaffNote['tone']>, string> = {
-  foreground: 'fill-foreground',
-  primary: 'fill-primary',
-  muted: 'fill-muted-foreground',
+  given: 'fill-ink-soft',
+  answer: 'fill-[#9b3b2f]',
 }
 
 const ACCIDENTAL_GLYPH: Record<number, string> = {
@@ -59,12 +59,12 @@ export function Staff({
   className,
 }: StaffProps) {
   const svgRef = useRef<SVGSVGElement>(null)
-  const dragState = useRef<{
-    id: string
-    startY: number
-    moved: boolean
-  } | null>(null)
+  const roughId = useId().replace(/:/g, '')
+  const dragState = useRef<{ id: string; startY: number; moved: boolean } | null>(
+    null,
+  )
 
+  const [xPositions, setXPositions] = useState<Record<string, number>>({})
   const [selectedId, setSelectedId] = useState<string | null>(
     notes.find((n) => n.draggable)?.id ?? null,
   )
@@ -76,6 +76,13 @@ export function Staff({
     [maxStep],
   )
 
+  const defaultX = useCallback(
+    (index: number) => Math.max(CLEF_SAFE_X, FIRST_NOTE_X + index * NOTE_SPACING),
+    [],
+  )
+  const xForNote = (note: StaffNote, index: number) =>
+    xPositions[note.id] ?? defaultX(index)
+
   const stepForClientY = useCallback(
     (clientY: number) => {
       const svg = svgRef.current
@@ -83,12 +90,20 @@ export function Staff({
       const rect = svg.getBoundingClientRect()
       const ratio = height / rect.height
       const svgY = (clientY - rect.top) * ratio
-      const rawStep = maxStep - (svgY - PADDING_TOP) / STEP_PX
-      const snapped = Math.round(rawStep)
+      const snapped = Math.round(maxStep - (svgY - PADDING_TOP) / STEP_PX)
       return Math.max(minStep, Math.min(maxStep, snapped))
     },
     [height, maxStep, minStep],
   )
+
+  const xForClientX = useCallback((clientX: number) => {
+    const svg = svgRef.current
+    if (!svg) return null
+    const rect = svg.getBoundingClientRect()
+    const ratio = VIEW_WIDTH / rect.width
+    const svgX = (clientX - rect.left) * ratio
+    return Math.max(CLEF_SAFE_X, Math.min(RIGHT_EDGE, svgX))
+  }, [])
 
   const handlePointerDown = (e: React.PointerEvent, note: StaffNote) => {
     if (!note.draggable) return
@@ -103,23 +118,31 @@ export function Staff({
     if (!state) return
     if (Math.abs(e.clientY - state.startY) > DRAG_THRESHOLD) state.moved = true
     if (!state.moved) return
-    const step = stepForClientY(e.clientY)
-    if (step === null) return
     const note = notes.find((n) => n.id === state.id)
     if (!note) return
-    if (diatonicStep(note.pitch) === step) return
-    onNoteChange?.(state.id, pitchFromDiatonicStep(step, note.pitch.accidental))
+
+    const x = xForClientX(e.clientX)
+    if (x !== null) setXPositions((prev) => ({ ...prev, [state.id]: x }))
+
+    const step = stepForClientY(e.clientY)
+    if (step !== null && diatonicStep(note.pitch) !== step) {
+      onNoteChange?.(
+        state.id,
+        pitchFromDiatonicStep(step, note.pitch.accidental),
+      )
+    }
   }
 
   const handlePointerUp = (e: React.PointerEvent) => {
     const state = dragState.current
     dragState.current = null
     if (!state) return
-    // A tap without dragging cycles the accidental: natural -> # -> b -> natural.
     if (!state.moved) {
+      // Tap (no drag) cycles the accidental: natural -> sharp -> flat.
       const note = notes.find((n) => n.id === state.id)
       if (note) {
-        const next = note.pitch.accidental === 0 ? 1 : note.pitch.accidental === 1 ? -1 : 0
+        const next =
+          note.pitch.accidental === 0 ? 1 : note.pitch.accidental === 1 ? -1 : 0
         onNoteChange?.(state.id, { ...note.pitch, accidental: next })
       }
     }
@@ -129,123 +152,152 @@ export function Staff({
   const setAccidental = (acc: number) => {
     if (!selectedId) return
     const note = notes.find((n) => n.id === selectedId)
-    if (!note) return
-    onNoteChange?.(selectedId, { ...note.pitch, accidental: acc })
+    if (note) onNoteChange?.(selectedId, { ...note.pitch, accidental: acc })
   }
 
   const selectedNote = notes.find((n) => n.id === selectedId)
 
   return (
     <div className={cn('flex flex-col items-center gap-3', className)}>
-      <svg
-        ref={svgRef}
-        viewBox={`0 0 ${VIEW_WIDTH} ${height}`}
-        className="w-full max-w-md touch-none select-none"
-        role="img"
-        aria-label="Music staff"
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
+      <div
+        className="w-full max-w-md rounded-md border-2 border-ink/40 p-2"
+        style={{
+          background:
+            'radial-gradient(120% 120% at 50% 30%, #f1e4c3 0%, #e6d3a4 60%, #d7bf8c 100%)',
+          boxShadow:
+            'inset 0 0 38px rgba(120,90,50,0.35), 0 2px 10px rgba(74,53,38,0.25)',
+        }}
       >
-        {/* Staff lines */}
-        {TREBLE_LINE_STEPS.map((step) => (
-          <line
-            key={step}
-            x1={12}
-            x2={VIEW_WIDTH - 12}
-            y1={yForStep(step)}
-            y2={yForStep(step)}
-            className="stroke-foreground/70"
-            strokeWidth={1.4}
-          />
-        ))}
-
-        {/* Treble clef glyph */}
-        <text
-          x={CLEF_X}
-          y={yForStep(BOTTOM_LINE_STEP) + LINE_GAP * 0.9}
-          fontSize={LINE_GAP * 4.6}
-          className="fill-foreground"
-          style={{ fontFamily: "'Noto Music', 'Bravura', serif" }}
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${VIEW_WIDTH} ${height}`}
+          className="w-full touch-none select-none"
+          style={{ color: '#4a3526' }}
+          role="img"
+          aria-label="Music staff"
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
         >
-          {'\uD834\uDD1E'}
-        </text>
-
-        {notes.map((note, i) => {
-          const step = diatonicStep(note.pitch)
-          const cx = FIRST_NOTE_X + i * NOTE_SPACING
-          const cy = yForStep(step)
-          const fill = TONE_FILL[note.tone ?? 'foreground']
-          const isSelected = note.id === selectedId
-          return (
-            <g key={note.id}>
-              {ledgerLineSteps(step).map((ls) => (
-                <line
-                  key={ls}
-                  x1={cx - 16}
-                  x2={cx + 16}
-                  y1={yForStep(ls)}
-                  y2={yForStep(ls)}
-                  className="stroke-foreground/70"
-                  strokeWidth={1.4}
-                />
-              ))}
-              {note.pitch.accidental !== 0 && (
-                <text
-                  x={cx - 22}
-                  y={cy + 6}
-                  fontSize={22}
-                  className={fill}
-                  style={{ fontFamily: "'Noto Music', 'Bravura', serif" }}
-                >
-                  {ACCIDENTAL_GLYPH[note.pitch.accidental]}
-                </text>
-              )}
-              <ellipse
-                cx={cx}
-                cy={cy}
-                rx={NOTE_RX}
-                ry={NOTE_RY}
-                transform={`rotate(-20 ${cx} ${cy})`}
-                className={cn(
-                  fill,
-                  note.draggable && 'cursor-grab',
-                  isSelected && note.draggable && 'stroke-ring',
-                )}
-                strokeWidth={isSelected && note.draggable ? 2 : 0}
-                onPointerDown={(e) => handlePointerDown(e, note)}
+          <defs>
+            <filter id={`rough-${roughId}`} x="-15%" y="-15%" width="130%" height="130%">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.018 0.024"
+                numOctaves={2}
+                seed={7}
+                result="noise"
               />
-            </g>
-          )
-        })}
-      </svg>
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale={2.8}
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+
+          <g filter={`url(#rough-${roughId})`}>
+            {/* Staff lines */}
+            {TREBLE_LINE_STEPS.map((step) => (
+              <line
+                key={step}
+                x1={12}
+                x2={VIEW_WIDTH - 12}
+                y1={yForStep(step)}
+                y2={yForStep(step)}
+                stroke="currentColor"
+                strokeWidth={1.6}
+                strokeLinecap="round"
+              />
+            ))}
+
+            {/* Treble clef glyph */}
+            <text
+              x={CLEF_X}
+              y={yForStep(BOTTOM_LINE_STEP) + LINE_GAP * 0.9}
+              fontSize={LINE_GAP * 4.6}
+              fill="currentColor"
+              style={{ fontFamily: "'Noto Music', 'Bravura', serif" }}
+            >
+              {'\uD834\uDD1E'}
+            </text>
+
+            {notes.map((note, i) => {
+              const step = diatonicStep(note.pitch)
+              const cx = xForNote(note, i)
+              const cy = yForStep(step)
+              const fill = TONE_FILL[note.tone ?? 'given']
+              const isSelected = note.id === selectedId && note.draggable
+              return (
+                <g key={note.id}>
+                  {ledgerLineSteps(step).map((ls) => (
+                    <line
+                      key={ls}
+                      x1={cx - 16}
+                      x2={cx + 16}
+                      y1={yForStep(ls)}
+                      y2={yForStep(ls)}
+                      stroke="currentColor"
+                      strokeWidth={1.6}
+                      strokeLinecap="round"
+                    />
+                  ))}
+                  {note.pitch.accidental !== 0 && (
+                    <text
+                      x={cx - 23}
+                      y={cy + 7}
+                      fontSize={24}
+                      fill="currentColor"
+                      style={{ fontFamily: "'Noto Music', 'Bravura', serif" }}
+                    >
+                      {ACCIDENTAL_GLYPH[note.pitch.accidental]}
+                    </text>
+                  )}
+                  <ellipse
+                    cx={cx}
+                    cy={cy}
+                    rx={NOTE_RX}
+                    ry={NOTE_RY}
+                    transform={`rotate(-20 ${cx} ${cy})`}
+                    className={cn(fill, note.draggable && 'cursor-grab')}
+                    stroke={isSelected ? '#9b3b2f' : 'none'}
+                    strokeWidth={isSelected ? 2.5 : 0}
+                    onPointerDown={(e) => handlePointerDown(e, note)}
+                  />
+                </g>
+              )
+            })}
+          </g>
+        </svg>
+      </div>
 
       {selectedNote?.draggable && (
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Accidental:</span>
-          <div className="flex overflow-hidden rounded-md border">
+        <div className="flex items-center gap-2 font-map text-ink">
+          <span className="text-ink-soft">Accidental:</span>
+          <div className="flex overflow-hidden rounded-md border-2 border-ink/40">
             {[
-              { acc: -1, label: '\u266D' },
-              { acc: 0, label: '\u266E' },
-              { acc: 1, label: '\u266F' },
-            ].map(({ acc, label }) => (
+              { acc: -1, label: '\u266D', name: 'flat' },
+              { acc: 0, label: '\u266E', name: 'natural' },
+              { acc: 1, label: '\u266F', name: 'sharp' },
+            ].map(({ acc, label, name }) => (
               <button
                 key={acc}
                 type="button"
                 onClick={() => setAccidental(acc)}
                 className={cn(
-                  'h-9 w-10 text-lg leading-none transition-colors hover:bg-accent',
-                  selectedNote.pitch.accidental === acc &&
-                    'bg-primary text-primary-foreground hover:bg-primary',
+                  'h-9 w-10 text-lg leading-none transition-colors hover:bg-ink/10',
+                  selectedNote.pitch.accidental === acc
+                    ? 'bg-ink text-parchment hover:bg-ink'
+                    : 'text-ink',
                 )}
-                aria-label={
-                  acc === -1 ? 'flat' : acc === 0 ? 'natural' : 'sharp'
-                }
+                aria-label={name}
               >
                 {label}
               </button>
             ))}
           </div>
-          <span className="ml-2 tabular-nums text-muted-foreground">
+          <span className="ml-2 text-lg tabular-nums">
             {formatPitch(selectedNote.pitch)}
           </span>
         </div>

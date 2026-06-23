@@ -2,8 +2,20 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import "@fontsource/im-fell-english/400.css";
+@import "@fontsource/im-fell-english/400-italic.css";
+@import "@fontsource/pirata-one/400.css";
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-map: 'IM Fell English', Georgia, serif;
+  --font-display: 'Pirata One', 'IM Fell English', serif;
+  --color-parchment: #e9d8b0;
+  --color-parchment-dark: #d8c290;
+  --color-ink: #4a3526;
+  --color-ink-soft: #6b513b;
+}
 
 @theme inline {
     --font-heading: var(--font-sans);
@@ -125,6 +137,6 @@
     @apply bg-background text-foreground;
     }
   html {
-    @apply font-sans;
+    @apply font-map;
     }
 }
