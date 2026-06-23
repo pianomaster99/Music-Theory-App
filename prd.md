@@ -1,9 +1,9 @@
-#Music Theory App Product Requirements Document
-##Introduction
+# Music Theory App Product Requirements Document
+## Introduction
 Music
-##Problems and solutions
+## Problems and solutions
 Socratic Method
-##Objectives
+## Objectives
 1. Tutor
 Pianomaster99 is our AI tutor that guides student through examples. 
 In terms of UI, Pianomaster99 is a mascot that is visually inviting.
@@ -41,8 +41,8 @@ Currently, we aim to have 4 modules.
 
 1. Persistence
 1. Mobile
-##MVP
-##User persona
+## MVP
+## User persona
 The general user is a beginner in piano playing who wants to know how music is constructed.
 Prerequisites of the general user
     1. Reads English
@@ -50,9 +50,9 @@ Prerequisites of the general user
     1. Ability to correspond notes on a sheet to keys on a piano
 Ideal Customer Profile
     1. A student who has been studying with a piano teacher for at least a month, but no longer than at most 2 years.
-##User story
-##Tech stack
+## User story
+## Tech stack
 1. Vite React
 1. Firestore from Firebase (auth email and password are in .env file)
 Do not curl anything onto my computer without permission
-##Milestones
+## Milestones
