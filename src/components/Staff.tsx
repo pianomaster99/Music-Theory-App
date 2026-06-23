@@ -205,8 +205,10 @@ export function Staff({
             </filter>
           </defs>
 
-          <g filter={`url(#rough-${roughId})`}>
-            {/* Staff lines */}
+          <g>
+            {/* Staff lines. The rough filter is applied per element (not to the
+                whole group) so removing a note's accidental glyph repaints
+                cleanly instead of leaving a stale mark. */}
             {TREBLE_LINE_STEPS.map((step) => (
               <line
                 key={step}
@@ -217,6 +219,7 @@ export function Staff({
                 stroke="currentColor"
                 strokeWidth={1.6}
                 strokeLinecap="round"
+                filter={`url(#rough-${roughId})`}
               />
             ))}
 
@@ -227,6 +230,7 @@ export function Staff({
               fontSize={LINE_GAP * 4.6}
               fill="currentColor"
               style={{ fontFamily: "'Noto Music', 'Bravura', serif" }}
+              filter={`url(#rough-${roughId})`}
             >
               {'\uD834\uDD1E'}
             </text>
@@ -249,6 +253,7 @@ export function Staff({
                       stroke="currentColor"
                       strokeWidth={1.6}
                       strokeLinecap="round"
+                      filter={`url(#rough-${roughId})`}
                     />
                   ))}
                   {note.pitch.accidental !== 0 && (
@@ -258,6 +263,7 @@ export function Staff({
                       fontSize={24}
                       fill="currentColor"
                       style={{ fontFamily: "'Noto Music', 'Bravura', serif" }}
+                      filter={`url(#rough-${roughId})`}
                     >
                       {ACCIDENTAL_GLYPH[note.pitch.accidental]}
                     </text>
@@ -271,6 +277,7 @@ export function Staff({
                     className={cn(fill, note.draggable && 'cursor-grab')}
                     stroke={isSelected ? '#9b3b2f' : 'none'}
                     strokeWidth={isSelected ? 2.5 : 0}
+                    filter={`url(#rough-${roughId})`}
                     onPointerDown={(e) => handlePointerDown(e, note)}
                   />
                 </g>
