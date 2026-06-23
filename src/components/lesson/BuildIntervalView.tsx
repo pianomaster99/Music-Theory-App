@@ -6,6 +6,7 @@ import { validateAnswer } from '@/lib/content/validate'
 import type { BuildIntervalStep } from '@/lib/content/types'
 import { diatonicStep, type Pitch } from '@/lib/theory/pitch'
 import { pitchFromDiatonicStep } from '@/lib/theory/staff'
+import { ensureAudio, playPitches } from '@/lib/audio'
 import type { ProblemViewProps } from './types'
 
 function initialAnswer(step: BuildIntervalStep): Pitch {
@@ -31,6 +32,13 @@ export function BuildIntervalView({
     onResult(result, feedbackFor(step, result.category))
   }
 
+  const hearIt = async () => {
+    await ensureAudio()
+    const pair =
+      step.direction === 'above' ? [step.basePitch, answer] : [answer, step.basePitch]
+    playPitches(pair, 'melodic')
+  }
+
   const notes: StaffNote[] = [
     { id: 'base', pitch: step.basePitch, tone: 'given' },
     { id: 'answer', pitch: answer, draggable: true, tone: 'answer' },
@@ -48,6 +56,9 @@ export function BuildIntervalView({
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Button onClick={check} disabled={solved}>
           Check
+        </Button>
+        <Button variant="outline" onClick={hearIt}>
+          Hear it
         </Button>
         {step.hints && step.hints.length > 0 && (
           <Button

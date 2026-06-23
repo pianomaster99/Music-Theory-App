@@ -5,6 +5,7 @@ import { feedbackFor } from '@/lib/content/feedback'
 import { validateAnswer } from '@/lib/content/validate'
 import type { IdentifyIntervalStep } from '@/lib/content/types'
 import type { IntervalQuality } from '@/lib/theory/intervals'
+import { ensureAudio, playPitches } from '@/lib/audio'
 import { cn } from '@/lib/utils'
 import type { ProblemViewProps } from './types'
 
@@ -56,6 +57,11 @@ export function IdentifyIntervalView({
     onResult(result, feedbackFor(step, result.category))
   }
 
+  const hearIt = async () => {
+    await ensureAudio()
+    playPitches([step.pitches[0], step.pitches[1]], 'melodic')
+  }
+
   return (
     <div className="space-y-4">
       <Staff notes={notes} />
@@ -105,6 +111,9 @@ export function IdentifyIntervalView({
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Button onClick={check} disabled={!canCheck || solved}>
           Check
+        </Button>
+        <Button variant="outline" onClick={hearIt}>
+          Hear it
         </Button>
         {step.hints && step.hints.length > 0 && (
           <Button

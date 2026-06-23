@@ -6,6 +6,7 @@ import {
   pitchFromDiatonicStep,
 } from '@/lib/theory/staff'
 import { diatonicStep, formatPitch, type Pitch } from '@/lib/theory/pitch'
+import { ensureAudio, playPitch } from '@/lib/audio'
 import { cn } from '@/lib/utils'
 
 export interface StaffNote {
@@ -108,6 +109,7 @@ export function Staff({
   const handlePointerDown = (e: React.PointerEvent, note: StaffNote) => {
     if (!note.draggable) return
     e.preventDefault()
+    void ensureAudio()
     ;(e.target as Element).setPointerCapture(e.pointerId)
     setSelectedId(note.id)
     dragState.current = { id: note.id, startY: e.clientY, moved: false }
@@ -126,10 +128,9 @@ export function Staff({
 
     const step = stepForClientY(e.clientY)
     if (step !== null && diatonicStep(note.pitch) !== step) {
-      onNoteChange?.(
-        state.id,
-        pitchFromDiatonicStep(step, note.pitch.accidental),
-      )
+      const landed = pitchFromDiatonicStep(step, note.pitch.accidental)
+      onNoteChange?.(state.id, landed)
+      playPitch(landed)
     }
   }
 
@@ -143,7 +144,9 @@ export function Staff({
       if (note) {
         const next =
           note.pitch.accidental === 0 ? 1 : note.pitch.accidental === 1 ? -1 : 0
-        onNoteChange?.(state.id, { ...note.pitch, accidental: next })
+        const updated = { ...note.pitch, accidental: next }
+        onNoteChange?.(state.id, updated)
+        playPitch(updated)
       }
     }
     ;(e.target as Element).releasePointerCapture?.(e.pointerId)
@@ -152,7 +155,12 @@ export function Staff({
   const setAccidental = (acc: number) => {
     if (!selectedId) return
     const note = notes.find((n) => n.id === selectedId)
-    if (note) onNoteChange?.(selectedId, { ...note.pitch, accidental: acc })
+    if (note) {
+      const updated = { ...note.pitch, accidental: acc }
+      void ensureAudio()
+      onNoteChange?.(selectedId, updated)
+      playPitch(updated)
+    }
   }
 
   const selectedNote = notes.find((n) => n.id === selectedId)

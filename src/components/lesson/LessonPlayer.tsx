@@ -4,6 +4,7 @@ import { Staff, type StaffNote } from '@/components/Staff'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { ensureAudio, playPitches } from '@/lib/audio'
 import type { ValidationResult } from '@/lib/content/validate'
 import type { Lesson, Step } from '@/lib/content/types'
 import { isProblemStep } from '@/lib/content/types'
@@ -139,6 +140,19 @@ function StepBody({
         <h2 className="font-display text-xl">{step.title}</h2>
         <p className="leading-relaxed text-ink">{step.body}</p>
         {visual && <Staff notes={visual} />}
+        {step.visualPitches && step.visualPitches.length > 0 && (
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                await ensureAudio()
+                playPitches(step.visualPitches!, 'melodic')
+              }}
+            >
+              Hear it
+            </Button>
+          </div>
+        )}
       </div>
     )
   }
