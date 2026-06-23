@@ -7,36 +7,49 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { course } from '@/content/course'
 
 export default function Home() {
   return (
-    <div className="mx-auto flex min-h-svh max-w-3xl flex-col items-center justify-center gap-8 px-4 py-12 text-center">
-      <div className="space-y-3">
-        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
-          Learn by doing
+    <div className="mx-auto max-w-3xl px-4 py-12">
+      <header className="mb-10 text-center">
+        <p className="text-sm uppercase tracking-widest text-ink-soft">
+          A learn-by-doing chart
         </p>
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Music Theory, one interaction at a time
+        <h1 className="mt-2 font-display text-5xl text-ink">
+          The Music Theory Map
         </h1>
-        <p className="text-lg text-muted-foreground">
-          Drag notes onto a staff, build intervals and chords, and get instant
-          feedback. No memorizing &mdash; you figure it out.
+        <p className="mx-auto mt-3 max-w-prose text-lg text-ink-soft">
+          Chart a course through music theory by doing, not memorizing. Drag
+          notes, build intervals, and let Pianomaster99 guide you.
         </p>
-      </div>
+      </header>
 
-      <Card className="w-full text-left">
-        <CardHeader>
-          <CardTitle>Intervals</CardTitle>
-          <CardDescription>
-            Start here. Learn how distances between notes work.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild>
-            <Link to="/lesson/demo">Start the first lesson</Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="space-y-8">
+        {course.modules.map((module) => (
+          <section key={module.id}>
+            <h2 className="font-display text-2xl text-ink">{module.title}</h2>
+            <p className="mb-4 text-ink-soft">{module.description}</p>
+            <div className="space-y-3">
+              {module.lessons.map((lesson, i) => (
+                <Card key={lesson.id}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">
+                      {i + 1}. {lesson.title}
+                    </CardTitle>
+                    <CardDescription>{lesson.summary}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button asChild>
+                      <Link to={`/lesson/${lesson.id}`}>Start lesson</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   )
 }

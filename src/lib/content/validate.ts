@@ -104,6 +104,9 @@ function validateIdentifyInterval(
   answer: IdentifyIntervalInput,
 ): ValidationResult {
   const numberRight = answer.number === step.answer.number
+  if (step.numberOnly) {
+    return result(numberRight ? 'correct' : 'wrong')
+  }
   const qualityRight = answer.quality === step.answer.quality
   if (numberRight && qualityRight) return result('correct')
   if (numberRight) return result('rightNumberWrongQuality')

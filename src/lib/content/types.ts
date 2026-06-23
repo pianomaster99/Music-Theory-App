@@ -53,6 +53,8 @@ export interface IdentifyIntervalStep extends BaseStep {
   kind: 'identifyInterval'
   pitches: [Pitch, Pitch]
   answer: Interval
+  /** When true, only the interval number is asked for (quality is ignored). */
+  numberOnly?: boolean
 }
 
 export interface BuildChordStep extends BaseStep {
