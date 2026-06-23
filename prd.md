@@ -105,6 +105,25 @@ Key: For each lesson, introduce the example, explain the task, but do not give t
     1. The web app should be formatted well for different screens, such as mobile, as well.
 
 ## MVP
+The MVP is the full product with every objective above met. We are not shipping a reduced subset — the MVP is "done" only when all of the following objectives are implemented and working together. The milestones below break this scope into features so we can build toward it in order.
+
+The MVP must include all objectives:  
+    1. Tutor — Pianomaster99 introduces each topic, gives specific feedback on failed attempts, gives non-revealing hints, and engages with the interface (including dragging notes on/off the staves and the ruler-slap reaction on wrong answers).
+    1. General UI Design — the full visual direction: early-Mickey-Mouse-style cartoon piano, hyper-realistic hand, modern round 3D buttons, medieval-but-legible text, and multiple swappable backgrounds that engage with the lesson.
+    1. Interface — the standard lesson layout: lesson explanation at the top, a button to open the reference table, the interactive feature in the center, and Check work and Help/hint buttons near the bottom, with Pianomaster99 engaging on check/help.
+    1. All three interactive features — the single-staff treble clef with draggable notes (including enharmonic spelling logic), the miniature 2-octave piano with the draggable hand, and the openable reference table that can also generate examples.
+    1. Audio — the tutor speaks what it types, a note plays its pitch when it lands on the staff, and the user can customize both the tutor's speaking voice and the instrument that plays the notes.
+    1. Onboarding — username, hand UI customization (male/female hand and skin color), expected usage time (drives number of questions per module), and self-reported experience.
+    1. Curriculum — all three modules (Intervals, Triads, Seventh Chords) with their lessons, plus random example generation for every lesson.
+    1. Feedback — lesson-specific feedback based on the user's current progress, including the right-note/wrong-enharmonic-spelling case and the perfect/consonant/dissonant "how does it feel" guidance.
+    1. Progress Tracker — tracks completed modules/lessons and maintains a daily streak.
+    1. Persistence — users can exit the website and resume their progress where they left off.
+    1. Mobile — the app is formatted well across screen sizes, including mobile.
+
+MVP success criteria  
+    1. A new user can onboard, work through all three modules end to end, and have their progress persist across sessions and devices.
+    1. The hint/feedback loop helps users arrive at answers themselves rather than being handed the solution.
+
 ## User persona
 The general user is a beginner in piano playing who wants to know how music is constructed.  
 Prerequisites of the general user  
@@ -116,6 +135,10 @@ Ideal Customer Profile
 ## User story
 1. A seven year old kid whose mom has taught him how to play fur elise and alla turca, and now his mom wants him to learn music theory. He logs onto the app for 20 minutes everyday because his mom forces him to. He makes a lot of mistakes at first, and requires assistance from Pianomaster99. Pianomaster99 should explain concepts in very simple terms so that the seven year old kid cann understand.
 1. A 25 year old dude who has free time and is a self taught pianist. He wants to learn music theory in order to compose his own music. He tries to do 1 module a day. 
+1. A 16 year old high school student who plays piano in jazz band and can already read sheet music fluently. She knows some theory by ear but not the formal names. She wants to quickly identify the lessons she already knows and skip ahead, so onboarding should let her self-report experience and the app should not force her to grind through content that is too easy.
+1. A 40 year old adult returning to piano after quitting lessons as a child. He is rusty, easily discouraged, and only has about 10 minutes at a time. He needs short sessions, gentle and encouraging feedback from Pianomaster99, and the ability to resume exactly where he left off.
+1. A piano teacher who tries the app to decide whether to recommend it to her students. She wants the lessons to be theoretically correct (especially enharmonic spelling) and the hints to teach the underlying reasoning rather than just reveal answers. She cares that a struggling student is guided, not given the solution.
+1. A returning user coming back after two weeks away. They want the app to remember which modules and lessons they have completed and drop them back into their progress without having to redo finished lessons.
 ## Open questions
 1. Should we add a graduation module?
 1. What are other types of lessons we can add?
@@ -125,3 +148,56 @@ Ideal Customer Profile
 Keep it simple for now, and don't use other software unless I tell you  
 Do not curl anything onto my computer without permission
 ## Milestones
+Built feature by feature, in this order. Each feature should be demoable on its own and builds on the previous ones. All of these together make up the MVP (every objective met).
+
+1. Project & data foundation
+    1. Vite + React app running; Firebase/Firestore connected (currently in test mode) with basic read/write verified.
+    1. Define the Firestore data model (user profile, per-module/lesson progress, attempt history).
+1. Lesson page shell (Interface)
+    1. The standard lesson layout: explanation at top, interactive area in the center, reference-table button near the top, and Check work + Help/hint buttons near the bottom.
+    1. A placeholder Pianomaster99 mascot on the page (final art comes later).
+1. Interactive staff feature
+    1. Single-staff treble clef where the user drags notes on and off the staff.
+    1. Enharmonic spelling logic: white keys use the basic spelling; black keys follow the MuseScore convention (dragging down = flat, dragging up = sharp).
+1. Audio engine
+    1. A note plays its pitch when it lands on the staff.
+    1. Text-to-speech so the tutor can speak whatever it types.
+1. Pianomaster99 tutor logic
+    1. Introduces each topic, gives specific feedback on failed attempts, and gives hints that guide without revealing the answer.
+    1. Engages with the interface (e.g. dragging notes on/off the staves) when the user checks work or asks for help.
+1. Intervals module
+    1. Lessons for Perfect, Consonant, and Dissonant intervals.
+    1. Random example generation (drag second note above/below a given note, drag two notes to form an interval, identify the interval, drag the M/m label, etc.).
+    1. Lesson-specific feedback, including the right-note/wrong-enharmonic-spelling case and the "how does the interval feel" guidance.
+1. Reference table feature
+    1. Openable table with interval info (e.g. number of notes) and chord info (the intervals in each chord).
+    1. Can generate examples for everything in the table.
+1. Triads module
+    1. Lessons for Major, Minor, and bonus Diminished/Augmented chords.
+    1. Example generation and chord-specific feedback, reusing the staff + tutor systems.
+1. Seventh Chords module
+    1. Lessons for Major 7th, Minor 7th, Dominant 7th, and bonus Diminished/Half-diminished 7th chords.
+    1. Example generation and feedback.
+1. Miniature piano + draggable hand feature
+    1. Miniature 2-octave piano with unpressed/pressed states and a connecting animation.
+    1. Draggable hand with 6 degrees of freedom (hand + 5 fingers); fingers have limited rotation and move relative to the hand. Finger states: above key / on key / pressing, with animations; clicking toggles above/on, and the play button presses.
+    1. Interval and chord examples that use the hand instead of (or alongside) the staff.
+1. Accounts & authentication
+    1. Email/password auth (per the tech stack) so progress can be tied to a user.
+    1. Tighten Firestore security rules from test mode to per-user access.
+1. Onboarding
+    1. Collect username, hand UI customization (male/female hand and skin color), expected usage time (drives questions per module), and self-reported experience across the modules.
+1. Progress tracker
+    1. Track completed modules/lessons.
+    1. Daily streak.
+1. Persistence
+    1. Save and restore progress via Firestore so users can exit the site and resume where they left off (across devices once accounts exist).
+1. General UI design & theming
+    1. Early-Mickey-Mouse-style cartoon piano, hyper-realistic hand, modern round 3D buttons, and medieval-but-legible text.
+    1. Multiple swappable backgrounds (outerspace, forest, living room, dungeon, candyland, etc.) that engage with the lesson (e.g. staff in a cage or on a cloud).
+1. Audio & avatar customization
+    1. Customize the tutor's speaking voice and the instrument that plays the notes.
+1. Mobile & responsiveness
+    1. Lay out and test the app well across screen sizes, including mobile.
+1. Ruler-slap reaction
+    1. Pianomaster99 hits the hand with a ruler on wrong answers (animation + audio).
