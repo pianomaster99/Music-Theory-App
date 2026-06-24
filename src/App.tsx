@@ -2,6 +2,8 @@ import { Route, Routes } from 'react-router-dom'
 import Home from '@/pages/Home'
 import LessonPage from '@/pages/LessonPage'
 import StaffDemo from '@/pages/StaffDemo'
+import PianoDemo from '@/pages/PianoDemo'
+import { Calibrate } from '@/pages/Calibrate'
 import Auth from '@/pages/Auth'
 import RequireAuth from '@/components/RequireAuth'
 
@@ -26,6 +28,8 @@ export default function App() {
         }
       />
       <Route path="/dev/staff" element={<StaffDemo />} />
+      <Route path="/dev/piano" element={<PianoDemo />} />
+      <Route path="/dev/calibrate" element={<Calibrate />} />
     </Routes>
   )
 }

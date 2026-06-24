@@ -99,3 +99,29 @@ function accidentalAscii(accidental: number): string {
 export function pitch(letter: Letter, octave: number, accidental = 0): Pitch {
   return { letter, accidental, octave }
 }
+
+/** Spelling for each chromatic class, preferring sharps for black keys. */
+const SHARP_SPELLING: { letter: Letter; accidental: number }[] = [
+  { letter: 'C', accidental: 0 },
+  { letter: 'C', accidental: 1 },
+  { letter: 'D', accidental: 0 },
+  { letter: 'D', accidental: 1 },
+  { letter: 'E', accidental: 0 },
+  { letter: 'F', accidental: 0 },
+  { letter: 'F', accidental: 1 },
+  { letter: 'G', accidental: 0 },
+  { letter: 'G', accidental: 1 },
+  { letter: 'A', accidental: 0 },
+  { letter: 'A', accidental: 1 },
+  { letter: 'B', accidental: 0 },
+]
+
+/**
+ * Convert a MIDI number to a pitch using sharp spelling for black keys.
+ * Useful for piano keys, where each key has a fixed default spelling.
+ */
+export function pitchFromMidi(midiValue: number): Pitch {
+  const octave = Math.floor(midiValue / 12) - 1
+  const spelling = SHARP_SPELLING[((midiValue % 12) + 12) % 12]
+  return { letter: spelling.letter, accidental: spelling.accidental, octave }
+}
