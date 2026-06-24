@@ -13,6 +13,8 @@ import { course } from '@/content/course'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { useCourseProgress } from '@/lib/progress/useCourseProgress'
 import type { LessonState, LessonStatus } from '@/lib/progress/courseProgress'
+import type { Achievement } from '@/lib/progress/achievements'
+import type { StreakState } from '@/lib/progress/streak'
 
 const STATUS_LABEL: Record<LessonStatus, string> = {
   complete: 'Charted',
@@ -36,7 +38,8 @@ function actionLabel(status: LessonStatus): string {
 
 export default function Home() {
   const { user, signOutUser } = useAuth()
-  const { states, recommended, totals, loading } = useCourseProgress()
+  const { states, recommended, totals, streak, achievements, loading } =
+    useCourseProgress()
   const firstName = user?.displayName?.split(' ')[0]
 
   const stateById = new Map<string, LessonState>(
@@ -49,9 +52,12 @@ export default function Home() {
         <span className="font-display text-lg text-ink">
           {firstName ? `Ahoy, ${firstName}` : 'Ahoy'}
         </span>
-        <Button variant="ghost" size="sm" onClick={() => void signOutUser()}>
-          Sign out
-        </Button>
+        <div className="flex items-center gap-3">
+          {!loading && <StreakChip streak={streak} />}
+          <Button variant="ghost" size="sm" onClick={() => void signOutUser()}>
+            Sign out
+          </Button>
+        </div>
       </div>
 
       <header className="mb-8 text-center">
@@ -149,6 +155,64 @@ export default function Home() {
           </section>
         ))}
       </div>
+
+      {!loading && (
+        <section className="mt-10">
+          <h2 className="font-display text-2xl text-ink">Trophies</h2>
+          <p className="mb-4 text-ink-soft">
+            Earn these as you explore the map.
+          </p>
+          <Achievements achievements={achievements} />
+        </section>
+      )}
+    </div>
+  )
+}
+
+function StreakChip({ streak }: { streak: StreakState | null }) {
+  const count = streak?.currentStreak ?? 0
+  const active = count > 0
+  return (
+    <span
+      className={
+        'inline-flex items-center gap-1 rounded-full border-2 px-3 py-1 text-sm font-medium ' +
+        (active
+          ? 'border-ink/40 text-ink'
+          : 'border-ink/20 text-ink-soft')
+      }
+      title="Daily practice streak"
+    >
+      <span aria-hidden>{'\u{1F525}'}</span>
+      {active ? `${count}-day streak` : 'No streak yet'}
+    </span>
+  )
+}
+
+function Achievements({ achievements }: { achievements: Achievement[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {achievements.map((a) => (
+        <div
+          key={a.id}
+          className={
+            'flex items-start gap-3 rounded-lg border-2 p-3 ' +
+            (a.earned
+              ? 'border-ink/40 bg-parchment/60'
+              : 'border-ink/15 opacity-50')
+          }
+          title={a.earned ? 'Earned' : 'Locked'}
+        >
+          <span className="text-2xl" aria-hidden>
+            {a.earned ? a.icon : '\u{1F512}'}
+          </span>
+          <div>
+            <p className="font-display text-base leading-tight text-ink">
+              {a.title}
+            </p>
+            <p className="text-xs text-ink-soft">{a.description}</p>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

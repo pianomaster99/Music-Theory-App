@@ -12,6 +12,7 @@ import { isProblemStep } from '@/lib/content/types'
 import { nextLesson } from '@/content/course'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { loadLessonProgress, saveLessonProgress } from '@/lib/progress/progress'
+import { recordActivity } from '@/lib/progress/streak'
 import { Mascot, type MascotMood } from './Mascot'
 import { BuildIntervalView } from './BuildIntervalView'
 import { IdentifyIntervalView } from './IdentifyIntervalView'
@@ -28,6 +29,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const [completed, setCompleted] = useState(false)
   const [hydrated, setHydrated] = useState(false)
   const completedStepIds = useRef<string[]>([])
+  const activityRecorded = useRef(false)
   const [mascot, setMascot] = useState<{ message: string; mood: MascotMood }>({
     message: defaultMascotMessage(lesson.steps[0]),
     mood: 'neutral',
@@ -97,7 +99,23 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         completedStepIds.current = [...completedStepIds.current, step.id]
       }
       persist(stepIndex, false)
+      recordPractice()
     }
+  }
+
+  // Update the daily streak once per lesson session, on first solve.
+  const recordPractice = () => {
+    if (!user || activityRecorded.current) return
+    activityRecorded.current = true
+    void recordActivity(user.uid)
+      .then(({ state, advanced }) => {
+        if (advanced && state.currentStreak > 1) {
+          toast(`\u{1F525} ${state.currentStreak}-day streak!`)
+        }
+      })
+      .catch(() => {
+        activityRecorded.current = false
+      })
   }
 
   const canAdvance = step.kind === 'concept' || solved

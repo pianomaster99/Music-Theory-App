@@ -19,8 +19,11 @@ service cloud.firestore {
     //       - completed:        bool    (required)
     //       - updatedAt:        timestamp (required)
     //       - completedAt:      timestamp (optional)
-    //   - stats/{docId}: streaks, mastery, aggregate stats. Schema
-    //       validated in a later milestone; owner-only for now.
+    //   - stats/streak:
+    //       - currentStreak: number    (required, 0..100000)
+    //       - longestStreak: number    (required, 0..100000)
+    //       - lastActiveDate: string   (required, YYYY-MM-DD)
+    //       - updatedAt:      timestamp (required)
     //
     // NOTE: This is a prototype rule set. Review carefully before a
     // broad launch.
@@ -41,6 +44,20 @@ service cloud.firestore {
         && request.resource.data.displayName.size() >= 1
         && request.resource.data.displayName.size() <= 40
         && request.resource.data.createdAt is timestamp;
+    }
+
+    function isValidStreak() {
+      return request.resource.data.keys().hasOnly(['currentStreak', 'longestStreak', 'lastActiveDate', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['currentStreak', 'longestStreak', 'lastActiveDate', 'updatedAt'])
+        && request.resource.data.currentStreak is number
+        && request.resource.data.currentStreak >= 0
+        && request.resource.data.currentStreak <= 100000
+        && request.resource.data.longestStreak is number
+        && request.resource.data.longestStreak >= 0
+        && request.resource.data.longestStreak <= 100000
+        && request.resource.data.lastActiveDate is string
+        && request.resource.data.lastActiveDate.matches('^\\d{4}-\\d{2}-\\d{2}$')
+        && request.resource.data.updatedAt is timestamp;
     }
 
     function isValidProgress() {
@@ -71,9 +88,11 @@ service cloud.firestore {
         allow delete: if false;
       }
 
-      // Per-user stats documents (owner-only).
-      match /stats/{docId} {
-        allow read, write: if isOwner(userId);
+      // Per-user streak document (owner-only, schema-validated).
+      match /stats/streak {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidStreak();
+        allow delete: if false;
       }
     }
   }
