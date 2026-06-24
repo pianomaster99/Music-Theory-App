@@ -5,7 +5,7 @@ import { Staff, type StaffNote } from '@/components/Staff'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { ensureAudio, playPitches } from '@/lib/audio'
+import { ensureAudio, playPitches, playThwack } from '@/lib/audio'
 import type { ValidationResult } from '@/lib/content/validate'
 import type { Lesson, Step } from '@/lib/content/types'
 import { isProblemStep } from '@/lib/content/types'
@@ -49,6 +49,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   })
 
   const [speechOn, setSpeechOn] = useState(isSpeechEnabled())
+  const [slapToken, setSlapToken] = useState(0)
 
   const step = lesson.steps[stepIndex]
   const total = lesson.steps.length
@@ -129,6 +130,10 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       }
       persist(stepIndex, false)
       recordPractice()
+    } else {
+      // Pianomaster99 raps the hand with a ruler on a wrong answer.
+      setSlapToken((t) => t + 1)
+      void playThwack()
     }
   }
 
@@ -226,7 +231,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         <h1 className="pt-2 font-display text-2xl">{lesson.title}</h1>
       </div>
 
-      <Mascot message={mascot.message} mood={mascot.mood} />
+      <Mascot message={mascot.message} mood={mascot.mood} slapToken={slapToken} />
 
       <LessonStage>
         <StepBody

@@ -89,6 +89,21 @@ function freqOf(pitch: Pitch): number {
   return Tone.Frequency(midi(pitch), 'midi').toFrequency() as number
 }
 
+let thwack: Tone.NoiseSynth | null = null
+
+/** A short, sharp "thwack" — the ruler slapping the hand on a wrong answer. */
+export async function playThwack(): Promise<void> {
+  await ensureAudio()
+  if (!thwack) {
+    thwack = new Tone.NoiseSynth({
+      noise: { type: 'white' },
+      envelope: { attack: 0.001, decay: 0.13, sustain: 0 },
+    }).toDestination()
+    thwack.volume.value = -10
+  }
+  thwack.triggerAttackRelease(0.08)
+}
+
 /** Play a single pitch. No-op if audio hasn't been started yet. */
 export function playPitch(pitch: Pitch, duration: Tone.Unit.Time = '8n'): void {
   if (!synth) return

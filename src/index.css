@@ -140,3 +140,26 @@
     @apply font-map;
     }
 }
+
+/* Ruler-slap reaction: the ruler swings down and the mascot recoils. */
+@keyframes ruler-swing {
+  0% { transform: rotate(-75deg); opacity: 0; }
+  25% { opacity: 1; }
+  45% { transform: rotate(20deg); }
+  60% { transform: rotate(6deg); }
+  100% { transform: rotate(-75deg); opacity: 0; }
+}
+@keyframes mascot-recoil {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  30% { transform: translateX(-4px) rotate(-8deg); }
+  45% { transform: translateX(3px) rotate(6deg); }
+  60% { transform: translateX(-2px) rotate(-3deg); }
+  80% { transform: translateX(1px) rotate(1deg); }
+}
+.animate-ruler-swing {
+  transform-origin: bottom left;
+  animation: ruler-swing 600ms ease-out;
+}
+.animate-mascot-recoil {
+  animation: mascot-recoil 500ms ease-out;
+}
