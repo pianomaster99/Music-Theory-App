@@ -204,11 +204,11 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   return (
     <div className="mx-auto max-w-xl space-y-5 px-4 py-8">
       <div className="space-y-1">
-        <div className="flex items-center justify-between text-sm text-ink-soft">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-ink-soft">
           <Link to="/" className="hover:underline">
             &larr; Map
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             {isSpeechSupported() && (
               <button
                 type="button"

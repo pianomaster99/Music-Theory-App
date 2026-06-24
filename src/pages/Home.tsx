@@ -49,12 +49,12 @@ export default function Home() {
   )
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
-      <div className="mb-6 flex items-center justify-between text-ink-soft">
+    <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-2 text-ink-soft">
         <span className="font-display text-lg text-ink">
           {firstName ? `Ahoy, ${firstName}` : 'Ahoy'}
         </span>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           {!loading && <StreakChip streak={streak} />}
           <BackgroundPicker />
           <SettingsDialog />
@@ -68,10 +68,10 @@ export default function Home() {
         <p className="text-sm uppercase tracking-widest text-ink-soft">
           A learn-by-doing chart
         </p>
-        <h1 className="mt-2 font-display text-5xl text-ink">
+        <h1 className="mt-2 font-display text-4xl text-ink sm:text-5xl">
           The Music Theory Map
         </h1>
-        <p className="mx-auto mt-3 max-w-prose text-lg text-ink-soft">
+        <p className="mx-auto mt-3 max-w-prose text-base text-ink-soft sm:text-lg">
           Chart a course through music theory by doing, not memorizing. Drag
           notes, build intervals, and let Pianomaster99 guide you.
         </p>
