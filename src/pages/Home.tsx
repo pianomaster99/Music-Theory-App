@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { course } from '@/content/course'
 import { BackgroundPicker } from '@/components/BackgroundPicker'
+import { SettingsDialog } from '@/components/SettingsDialog'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { useCourseProgress } from '@/lib/progress/useCourseProgress'
 import type { LessonState, LessonStatus } from '@/lib/progress/courseProgress'
@@ -56,6 +57,7 @@ export default function Home() {
         <div className="flex items-center gap-3">
           {!loading && <StreakChip streak={streak} />}
           <BackgroundPicker />
+          <SettingsDialog />
           <Button variant="ghost" size="sm" onClick={() => void signOutUser()}>
             Sign out
           </Button>

@@ -15,6 +15,7 @@ import { loadLessonProgress, saveLessonProgress } from '@/lib/progress/progress'
 import { recordActivity } from '@/lib/progress/streak'
 import { ReferenceTable } from '@/components/ReferenceTable'
 import { BackgroundPicker } from '@/components/BackgroundPicker'
+import { SettingsDialog } from '@/components/SettingsDialog'
 import { LessonStage } from '@/components/LessonStage'
 import {
   cancelSpeech,
@@ -214,6 +215,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
               </button>
             )}
             <BackgroundPicker compact />
+            <SettingsDialog />
             <ReferenceTable />
             <span>
               Step {stepIndex + 1} of {total}

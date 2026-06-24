@@ -5,8 +5,73 @@ import { midi, type Pitch } from '@/lib/theory/pitch'
 // user gesture, so call ensureAudio() on the first interaction (e.g. pointer
 // down) before playing.
 
+type SynthSetOptions = Parameters<Tone.PolySynth<Tone.Synth>['set']>[0]
+
+export interface Instrument {
+  id: string
+  label: string
+  options: SynthSetOptions
+}
+
+export const INSTRUMENTS: Instrument[] = [
+  {
+    id: 'grand',
+    label: 'Grand piano',
+    options: {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.005, decay: 0.3, sustain: 0.2, release: 1.2 },
+    },
+  },
+  {
+    id: 'musicbox',
+    label: 'Music box',
+    options: {
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.001, decay: 0.25, sustain: 0, release: 0.5 },
+    },
+  },
+  {
+    id: 'organ',
+    label: 'Pipe organ',
+    options: {
+      oscillator: { type: 'sawtooth' },
+      envelope: { attack: 0.02, decay: 0.1, sustain: 0.9, release: 0.4 },
+    },
+  },
+  {
+    id: 'toy',
+    label: 'Toy synth',
+    options: {
+      oscillator: { type: 'square' },
+      envelope: { attack: 0.005, decay: 0.2, sustain: 0.1, release: 0.3 },
+    },
+  },
+]
+
+const INSTRUMENT_KEY = 'noteInstrument'
+
 let synth: Tone.PolySynth<Tone.Synth> | null = null
 let started = false
+let currentId = getInstrumentId()
+
+export function getInstrumentId(): string {
+  const id = localStorage.getItem(INSTRUMENT_KEY)
+  return INSTRUMENTS.some((i) => i.id === id) ? (id as string) : 'grand'
+}
+
+function optionsFor(id: string): SynthSetOptions {
+  return (INSTRUMENTS.find((i) => i.id === id) ?? INSTRUMENTS[0]).options
+}
+
+function applyInstrument() {
+  if (synth) synth.set(optionsFor(currentId))
+}
+
+export function setInstrument(id: string): void {
+  currentId = id
+  localStorage.setItem(INSTRUMENT_KEY, id)
+  applyInstrument()
+}
 
 export async function ensureAudio(): Promise<void> {
   if (!started) {
@@ -16,6 +81,7 @@ export async function ensureAudio(): Promise<void> {
   if (!synth) {
     synth = new Tone.PolySynth(Tone.Synth).toDestination()
     synth.volume.value = -9
+    applyInstrument()
   }
 }
 
