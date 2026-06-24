@@ -53,6 +53,19 @@ function pick<T>(rng: () => number, arr: T[]): T {
   return arr[Math.floor(rng() * arr.length)]
 }
 
+// Onboarding's expected daily time scales how many questions each lesson serves.
+// Changing it invalidates the materialization cache so counts update.
+let questionScale = 1
+export function setQuestionScale(scale: number): void {
+  if (scale !== questionScale) {
+    questionScale = scale
+    cache.clear()
+  }
+}
+function scaled(count: number): number {
+  return Math.max(1, Math.round(count * questionScale))
+}
+
 // Keep generated notes comfortably inside the staff's drawable range.
 const STEP_MIN = diatonicStep(pitch('A', 3)) // 24
 const STEP_MAX = diatonicStep(pitch('C', 6)) // 42
@@ -139,8 +152,9 @@ function genBuildInterval(
   const bases = spec.bases ?? DEFAULT_BASES
   const directions = spec.directions ?? DEFAULT_DIRECTIONS
   const steps: BuildIntervalStep[] = []
+  const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < spec.count && guard < spec.count * 40 + 40) {
+  while (steps.length < want && guard < want * 40 + 40) {
     guard++
     const base = pick(rng, bases)
     const target = pick(rng, spec.intervals)
@@ -172,8 +186,9 @@ function genIdentifyInterval(
   const bases = spec.bases ?? DEFAULT_BASES
   const directions = spec.directions ?? DEFAULT_DIRECTIONS
   const steps: IdentifyIntervalStep[] = []
+  const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < spec.count && guard < spec.count * 40 + 40) {
+  while (steps.length < want && guard < want * 40 + 40) {
     guard++
     const base = pick(rng, bases)
     const target = pick(rng, spec.intervals)
@@ -210,8 +225,9 @@ function genBuildChord(
 ): BuildChordStep[] {
   const roots = spec.roots ?? defaultRootsFor(spec.qualities)
   const steps: BuildChordStep[] = []
+  const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < spec.count && guard < spec.count * 40 + 40) {
+  while (steps.length < want && guard < want * 40 + 40) {
     guard++
     const root = pick(rng, roots)
     const quality = pick(rng, spec.qualities)
@@ -244,8 +260,9 @@ function genIdentifyChord(
 ): IdentifyChordStep[] {
   const roots = spec.roots ?? defaultRootsFor(spec.qualities)
   const steps: IdentifyChordStep[] = []
+  const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < spec.count && guard < spec.count * 40 + 40) {
+  while (steps.length < want && guard < want * 40 + 40) {
     guard++
     const root = pick(rng, roots)
     const quality = pick(rng, spec.qualities)

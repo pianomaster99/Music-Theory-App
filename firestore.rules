@@ -8,9 +8,14 @@ service cloud.firestore {
     // Collection: users
     // Document ID: {uid}  (must equal the authenticated user's uid)
     // Fields:
-    //   - displayName: string   (required, 1..40 chars)
+    //   - displayName: string    (required, 1..40 chars)
     //   - createdAt:   timestamp (required, immutable)
     //   - updatedAt:   timestamp (optional)
+    //   - onboarded:   bool      (optional)
+    //   - handGender:  string    (optional, 'male'|'female')
+    //   - handSkin:    string    (optional, 'light'|'tan'|'brown'|'deep')
+    //   - dailyMinutes:number    (optional, 0..100000)
+    //   - experience:  string    (optional, 'new'|'intervals'|'triads')
     //
     // Subcollections under users/{uid} (per-user, owner-only):
     //   - progress/{lessonId}:
@@ -38,12 +43,17 @@ service cloud.firestore {
     }
 
     function isValidProfile() {
-      return request.resource.data.keys().hasOnly(['displayName', 'createdAt', 'updatedAt'])
+      return request.resource.data.keys().hasOnly(['displayName', 'createdAt', 'updatedAt', 'onboarded', 'handGender', 'handSkin', 'dailyMinutes', 'experience'])
         && request.resource.data.keys().hasAll(['displayName', 'createdAt'])
         && request.resource.data.displayName is string
         && request.resource.data.displayName.size() >= 1
         && request.resource.data.displayName.size() <= 40
-        && request.resource.data.createdAt is timestamp;
+        && request.resource.data.createdAt is timestamp
+        && (!('onboarded' in request.resource.data) || request.resource.data.onboarded is bool)
+        && (!('handGender' in request.resource.data) || request.resource.data.handGender in ['male', 'female'])
+        && (!('handSkin' in request.resource.data) || request.resource.data.handSkin in ['light', 'tan', 'brown', 'deep'])
+        && (!('dailyMinutes' in request.resource.data) || (request.resource.data.dailyMinutes is number && request.resource.data.dailyMinutes >= 0 && request.resource.data.dailyMinutes <= 100000))
+        && (!('experience' in request.resource.data) || request.resource.data.experience in ['new', 'intervals', 'triads']);
     }
 
     function isValidStreak() {

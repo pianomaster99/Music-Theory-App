@@ -19,6 +19,8 @@ export interface HandPianoProps {
   highlight?: Pitch[]
   /** Called when Play is pressed, with the pitches under the resting fingers. */
   onPlay?: (pitches: Pitch[]) => void
+  /** CSS filter applied to the hand artwork to tint its skin tone. */
+  skinFilter?: string
   className?: string
 }
 
@@ -142,6 +144,7 @@ export function HandPiano({
   octaves = 2,
   highlight = [],
   onPlay,
+  skinFilter = 'none',
   className,
 }: HandPianoProps) {
   const svgRef = useRef<SVGSVGElement>(null)
@@ -434,7 +437,7 @@ export function HandPiano({
           preserveAspectRatio="none"
           className="cursor-move"
           onPointerDown={onHandPointerDown}
-          style={{ transition: 'all 120ms ease-out' }}
+          style={{ transition: 'all 120ms ease-out', filter: skinFilter }}
         />
 
         {/* Fingers, drawn on top so the knuckles stay visible. The finger's
@@ -465,7 +468,7 @@ export function HandPiano({
                 height={displayH}
                 preserveAspectRatio="none"
                 pointerEvents="none"
-                style={{ transition: 'all 140ms ease-out' }}
+                style={{ transition: 'all 140ms ease-out', filter: skinFilter }}
               />
               {f.state === 'pressing' && (
                 <ellipse cx={0} cy={-g.L + 6} rx={displayW * 0.42} ry={6} fill="#000" opacity={0.12} pointerEvents="none" />

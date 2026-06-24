@@ -5,12 +5,14 @@ import StaffDemo from '@/pages/StaffDemo'
 import PianoDemo from '@/pages/PianoDemo'
 import { Calibrate } from '@/pages/Calibrate'
 import Auth from '@/pages/Auth'
+import Onboarding from '@/pages/Onboarding'
 import RequireAuth from '@/components/RequireAuth'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/auth" element={<Auth />} />
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route
         path="/"
         element={
