@@ -14,6 +14,8 @@ import { useAuth } from '@/lib/auth/AuthProvider'
 import { loadLessonProgress, saveLessonProgress } from '@/lib/progress/progress'
 import { recordActivity } from '@/lib/progress/streak'
 import { ReferenceTable } from '@/components/ReferenceTable'
+import { BackgroundPicker } from '@/components/BackgroundPicker'
+import { LessonStage } from '@/components/LessonStage'
 import {
   cancelSpeech,
   isSpeechEnabled,
@@ -211,6 +213,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 {speechOn ? '🔊 Voice' : '🔇 Voice'}
               </button>
             )}
+            <BackgroundPicker compact />
             <ReferenceTable />
             <span>
               Step {stepIndex + 1} of {total}
@@ -223,16 +226,14 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <Mascot message={mascot.message} mood={mascot.mood} />
 
-      <Card>
-        <CardContent className="py-6">
-          <StepBody
-            key={step.id}
-            step={step}
-            solved={solved}
-            onResult={handleResult}
-          />
-        </CardContent>
-      </Card>
+      <LessonStage>
+        <StepBody
+          key={step.id}
+          step={step}
+          solved={solved}
+          onResult={handleResult}
+        />
+      </LessonStage>
 
       {canAdvance && (
         <div className="flex justify-end">

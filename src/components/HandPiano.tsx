@@ -389,11 +389,22 @@ export function HandPiano({
                 y={KEYBOARD_TOP}
                 width={WHITE_W - 2}
                 height={WHITE_H}
-                rx={6}
-                className={pressed ? 'fill-[#e7c79b]' : target ? 'fill-[#f0d9a8]' : resting ? 'fill-[#f7efe0]' : 'fill-[#fbf7ef]'}
-                stroke="#2b2118"
-                strokeWidth={2.4}
-                filter={`url(#rough-${rid})`}
+                rx={10}
+                className={pressed ? 'fill-[#ffdf8a]' : target ? 'fill-[#fff0bf]' : resting ? 'fill-[#fff8e8]' : 'fill-[#fdf8ee]'}
+                stroke="#1b140d"
+                strokeWidth={3.4}
+                strokeLinejoin="round"
+              />
+              {/* Cartoon gloss near the top of the key */}
+              <rect
+                x={k.index * WHITE_W + 5}
+                y={KEYBOARD_TOP + 5}
+                width={WHITE_W - 12}
+                height={WHITE_H * 0.34}
+                rx={7}
+                fill="#ffffff"
+                opacity={pressed ? 0.2 : 0.55}
+                pointerEvents="none"
               />
             </g>
           )
@@ -414,11 +425,22 @@ export function HandPiano({
                 y={KEYBOARD_TOP}
                 width={BLACK_W}
                 height={BLACK_H}
+                rx={9}
+                className={pressed ? 'fill-[#6b4a2a]' : target ? 'fill-[#8a4f2c]' : resting ? 'fill-[#34281b]' : 'fill-[#1c1510]'}
+                stroke="#000000"
+                strokeWidth={3}
+                strokeLinejoin="round"
+              />
+              {/* Glossy sheen on the black key */}
+              <rect
+                x={k.centerX - BLACK_W / 2 + 3}
+                y={KEYBOARD_TOP + 4}
+                width={BLACK_W - 6}
+                height={12}
                 rx={5}
-                className={pressed ? 'fill-[#5a4632]' : target ? 'fill-[#7a4a2f]' : resting ? 'fill-[#3a2c1e]' : 'fill-[#241a12]'}
-                stroke="#0f0a06"
-                strokeWidth={2}
-                filter={`url(#rough-${rid})`}
+                fill="#ffffff"
+                opacity={0.18}
+                pointerEvents="none"
               />
             </g>
           )
