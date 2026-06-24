@@ -1,4 +1,11 @@
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore'
 import { db } from '@/firebase'
 
 export interface LessonProgress {
@@ -29,6 +36,26 @@ export async function loadLessonProgress(
       : [],
     completed: d.completed === true,
   }
+}
+
+/** Load progress for every lesson the learner has touched, keyed by lessonId. */
+export async function loadAllProgress(
+  uid: string,
+): Promise<Record<string, LessonProgress>> {
+  const snap = await getDocs(collection(db, 'users', uid, 'progress'))
+  const out: Record<string, LessonProgress> = {}
+  snap.forEach((docSnap) => {
+    const d = docSnap.data()
+    out[docSnap.id] = {
+      currentStepIndex:
+        typeof d.currentStepIndex === 'number' ? d.currentStepIndex : 0,
+      completedStepIds: Array.isArray(d.completedStepIds)
+        ? (d.completedStepIds as string[])
+        : [],
+      completed: d.completed === true,
+    }
+  })
+  return out
 }
 
 export async function saveLessonProgress(
