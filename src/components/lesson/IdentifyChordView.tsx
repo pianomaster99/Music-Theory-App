@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Staff, type StaffNote } from '@/components/Staff'
 import { Button } from '@/components/ui/button'
 import { feedbackFor } from '@/lib/content/feedback'
@@ -8,6 +8,8 @@ import { isSeventh, type ChordQuality } from '@/lib/theory/chords'
 import { LETTERS } from '@/lib/theory/pitch'
 import { ensureAudio, playPitches } from '@/lib/audio'
 import { DragTokens, type DragToken, type DropSlot } from './DragTokens'
+import { FeatureTip } from './FeatureTip'
+import { TOKENS_TIP } from './featureTips'
 import type { ProblemViewProps } from './types'
 
 const TRIAD_QUALITIES: ChordQuality[] = ['major', 'minor', 'diminished', 'augmented']
@@ -32,19 +34,14 @@ const slots: DropSlot[] = [
 
 export function IdentifyChordView({
   step,
-  solved,
   onResult,
+  onHint,
 }: ProblemViewProps<IdentifyChordStep>) {
   const [values, setValues] = useState<Record<string, string | null>>({
     root: null,
     quality: null,
   })
   const [hintsShown, setHintsShown] = useState(0)
-
-  useEffect(() => {
-    setValues({ root: null, quality: null })
-    setHintsShown(0)
-  }, [step])
 
   const notes: StaffNote[] = step.pitches.map((p, i) => ({
     id: `c${i}`,
@@ -87,8 +84,16 @@ export function IdentifyChordView({
     playPitches(step.pitches, 'chord')
   }
 
+  const revealHint = () => {
+    if (!step.hints || step.hints.length === 0) return
+    const next = Math.min(hintsShown + 1, step.hints.length)
+    setHintsShown(next)
+    onHint?.(step.hints[next - 1])
+  }
+
   return (
     <div className="space-y-4">
+      <FeatureTip {...TOKENS_TIP} />
       <Staff notes={notes} />
 
       <p className="text-center text-sm text-ink-soft">
@@ -99,7 +104,6 @@ export function IdentifyChordView({
         slots={slots}
         tokens={tokens}
         values={values}
-        disabled={solved}
         labelFor={(slotId, value) =>
           slotId === 'quality' ? QUALITY_LABEL[value as ChordQuality] : value
         }
@@ -109,7 +113,7 @@ export function IdentifyChordView({
       />
 
       <div className="flex flex-wrap items-center justify-center gap-2">
-        <Button onClick={check} disabled={!canCheck || solved}>
+        <Button onClick={check} disabled={!canCheck}>
           Check
         </Button>
         <Button variant="outline" onClick={hearIt}>
@@ -118,21 +122,13 @@ export function IdentifyChordView({
         {step.hints && step.hints.length > 0 && (
           <Button
             variant="outline"
-            onClick={() => setHintsShown((n) => Math.min(n + 1, step.hints!.length))}
+            onClick={revealHint}
             disabled={hintsShown >= (step.hints?.length ?? 0)}
           >
             Hint
           </Button>
         )}
       </div>
-
-      {hintsShown > 0 && step.hints && (
-        <ul className="space-y-1 rounded-md border-2 border-ink/30 bg-parchment/50 p-3 text-sm text-ink">
-          {step.hints.slice(0, hintsShown).map((h, i) => (
-            <li key={i}>• {h}</li>
-          ))}
-        </ul>
-      )}
     </div>
   )
 }

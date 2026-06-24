@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
+import { onSpeaking } from '@/lib/speech'
+import { PianoMascot } from './PianoMascot'
 
 export type MascotMood = 'neutral' | 'happy' | 'thinking'
-
-const FACE: Record<MascotMood, string> = {
-  neutral: '\u266A', // ♪
-  happy: '\u266B', // ♫
-  thinking: '\u266A',
-}
 
 export function Mascot({
   message,
@@ -20,41 +15,68 @@ export function Mascot({
   slapToken?: number
 }) {
   const [slapping, setSlapping] = useState(false)
+  const [voiceTalking, setVoiceTalking] = useState(false)
+  const [estTalking, setEstTalking] = useState(false)
 
   useEffect(() => {
     if (slapToken <= 0) return
-    setSlapping(true)
-    const t = setTimeout(() => setSlapping(false), 600)
-    return () => clearTimeout(t)
+    // Defer the "on" flip out of the effect body (avoids cascading renders).
+    const raf = requestAnimationFrame(() => setSlapping(true))
+    const t = setTimeout(() => setSlapping(false), 1300)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(t)
+    }
   }, [slapToken])
+
+  // Move the mouth while the tutor is actually speaking.
+  useEffect(() => onSpeaking(setVoiceTalking), [])
+
+  // Fallback: animate the mouth for an estimated duration whenever a new line
+  // appears, so the keyboard "talks" even when the voice is muted.
+  useEffect(() => {
+    if (!message) return
+    const words = message.trim().split(/\s+/).length
+    const ms = Math.min(5000, Math.max(900, words * 280))
+    const raf = requestAnimationFrame(() => setEstTalking(true))
+    const t = setTimeout(() => setEstTalking(false), ms)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(t)
+    }
+  }, [message])
+
+  const talking = (voiceTalking || estTalking) && !slapping
+
+  const motion = slapping
+    ? 'animate-mascot-wrong-dance'
+    : talking
+      ? 'animate-mascot-fly'
+      : 'animate-mascot-hover'
 
   return (
     <div className="flex items-start gap-3">
-      <div className="relative">
-        <div
-          className={cn(
-            'flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-ink/50 text-2xl text-parchment',
-            mood === 'happy' ? 'bg-[#6b8f3a]' : 'bg-ink',
-            slapping && 'animate-mascot-recoil',
-          )}
-          aria-hidden
-        >
-          {slapping ? '\u2639' : FACE[mood]}
-        </div>
+      <div className="relative shrink-0">
+        <PianoMascot
+          mood={mood}
+          talking={talking}
+          slapping={slapping}
+          className={`h-24 w-20 ${motion}`}
+        />
         {slapping && (
           <span
-            className="animate-ruler-swing pointer-events-none absolute -right-1 -top-2 text-2xl"
+            className="animate-ruler-swing pointer-events-none absolute -right-2 top-0 text-2xl"
             aria-hidden
           >
             📏
           </span>
         )}
       </div>
-      <div className="relative flex-1 rounded-md border-2 border-ink/40 bg-parchment/70 px-4 py-3 text-ink">
-        <p className="text-xs uppercase tracking-widest text-ink-soft">
+      <div className="relative flex-1 rounded-2xl border-2 border-ink/40 bg-parchment/80 px-4 py-3 text-ink shadow-[0_3px_0_rgba(74,53,38,0.25)]">
+        <p className="text-xs font-bold uppercase tracking-widest text-ink-soft">
           Pianomaster99
         </p>
-        <p className="mt-0.5 leading-snug">{message}</p>
+        <p className="mt-0.5 text-xl leading-snug">{message}</p>
       </div>
     </div>
   )

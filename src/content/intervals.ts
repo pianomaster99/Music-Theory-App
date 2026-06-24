@@ -12,17 +12,63 @@ export const intervalsModule: Module = {
     'The distance between two notes. Learn to count, build, and name intervals by how they sound.',
   lessons: [
     {
+      id: 'intervals-basics',
+      title: 'Interval basics',
+      summary: 'What an interval is and how to count its number — no major/minor yet.',
+      steps: [
+        {
+          kind: 'concept',
+          id: 'ib-c1',
+          title: 'The musical alphabet',
+          body: 'Music uses just seven letter names: A B C D E F G. After G it starts over at A. Every line and space on the staff is one of these letters, and so is every white key on the piano.',
+          visualPitches: [pitch('C', 4), pitch('D', 4), pitch('E', 4), pitch('F', 4), pitch('G', 4)],
+        },
+        {
+          kind: 'concept',
+          id: 'ib-c2',
+          title: 'Half steps and whole steps',
+          body: 'A half step is the smallest move on the piano: one key to the very next, counting the black keys too (E–F is a half step). A whole step is two half steps stacked together (C–D). These are the rulers we use to measure every interval.',
+          visualPitches: [pitch('C', 4), pitch('D', 4)],
+          demoFeature: 'piano',
+        },
+        {
+          kind: 'concept',
+          id: 'ib-c3',
+          title: 'What is an interval?',
+          body: 'An interval is the distance between two notes. To find its number, count letter names from the lower note up to the higher one — and count the lower note as 1. From C up to G: C(1) D(2) E(3) F(4) G(5). That is a "fifth".',
+          visualPitches: [pitch('C', 4), pitch('G', 4)],
+        },
+        {
+          kind: 'concept',
+          id: 'ib-c4',
+          title: 'Just the number for now',
+          body: 'Later we will add words like "major" and "minor" for the exact flavor. For now, just practice the number: count the letters, including both ends. Same letter is a "unison" (1); one letter apart is a "second" (2); and so on.',
+          visualPitches: [pitch('D', 4), pitch('F', 4)],
+          demoFeature: 'choir',
+        },
+      ],
+      generate: [
+        {
+          kind: 'identifyInterval',
+          numberOnly: true,
+          intervals: [
+            { number: 2, quality: 'M' },
+            { number: 3, quality: 'M' },
+            { number: 4, quality: 'P' },
+            { number: 5, quality: 'P' },
+            { number: 6, quality: 'M' },
+            { number: 7, quality: 'M' },
+            { number: 8, quality: 'P' },
+          ],
+          count: 5,
+        },
+      ],
+    },
+    {
       id: 'intervals-perfect',
       title: 'Perfect intervals',
       summary: 'Unisons, fourths, fifths, and octaves — the open, stable sounds.',
       steps: [
-        {
-          kind: 'concept',
-          id: 'ip-c1',
-          title: 'What is an interval?',
-          body: 'An interval is the distance between two notes. To find its number, count letter names from the lower note to the higher one — counting the lower note as 1. From C up to G: C(1) D(2) E(3) F(4) G(5). That is a fifth.',
-          visualPitches: [pitch('C', 4), pitch('G', 4)],
-        },
         {
           kind: 'concept',
           id: 'ip-c2',

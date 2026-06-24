@@ -5,6 +5,7 @@ import type {
   GenSpec,
   IdentifyChordStep,
   IdentifyIntervalStep,
+  InteractiveFeature,
   Lesson,
   ProblemStep,
 } from '@/lib/content/types'
@@ -21,6 +22,7 @@ import {
 import {
   diatonicStep,
   formatPitch,
+  midi,
   pitch,
   type Pitch,
 } from '@/lib/theory/pitch'
@@ -52,6 +54,58 @@ function mulberry32(seed: number): () => number {
 function pick<T>(rng: () => number, arr: T[]): T {
   return arr[Math.floor(rng() * arr.length)]
 }
+
+// The piano and choir only span C4..C6 (MIDI 60..84). Problems whose notes fall
+// outside that range can only be built on the staff. Within range, the tool is
+// randomized so the same topic shows up across all three features.
+const PLAYABLE_LOW = midi(pitch('C', 4))
+const PLAYABLE_HIGH = midi(pitch('C', 6))
+
+function fitsInstruments(pitches: Pitch[]): boolean {
+  return pitches.every((p) => {
+    const m = midi(p)
+    return m >= PLAYABLE_LOW && m <= PLAYABLE_HIGH
+  })
+}
+
+// Rotate through tools in this order so build problems lead with the hand-piano
+// and choir (not the staff) and reliably alternate, instead of clustering on the
+// staff the way pure random did.
+const FEATURE_ORDER: InteractiveFeature[] = ['piano', 'choir', 'staff']
+
+function pickFeature(
+  pitches: Pitch[],
+  allowed: InteractiveFeature[] | undefined,
+  ctx: GenCtx,
+): InteractiveFeature {
+  const allow = new Set<InteractiveFeature>(allowed ?? FEATURE_ORDER)
+  const canInstrument = fitsInstruments(pitches)
+  const usable = (f: InteractiveFeature) =>
+    allow.has(f) && (f === 'staff' || canInstrument)
+
+  // Walk the rotation starting at the current cursor; take the first usable
+  // tool and park the cursor just past it for the next problem.
+  for (let i = 0; i < FEATURE_ORDER.length; i++) {
+    const idx = (ctx.rollIndex + i) % FEATURE_ORDER.length
+    const f = FEATURE_ORDER[idx]
+    if (usable(f)) {
+      ctx.rollIndex = idx + 1
+      return f
+    }
+  }
+  ctx.rollIndex += 1
+  return 'staff'
+}
+
+// Shared, per-lesson state so consecutive problems vary their tool. Content
+// non-repetition is tracked per generator via the example's signature key.
+interface GenCtx {
+  rollIndex: number
+}
+
+// How many times we'll re-roll to avoid repeating the previous example before
+// giving up and accepting a repeat (keeps tiny pools from stalling forever).
+const DISTINCT_TRIES = 24
 
 // Onboarding's expected daily time scales how many questions each lesson serves.
 // Changing it invalidates the materialization cache so counts update.
@@ -148,19 +202,30 @@ function genBuildInterval(
   rng: () => number,
   spec: Extract<GenSpec, { kind: 'buildInterval' }>,
   idAt: () => string,
+  ctx: GenCtx,
 ): BuildIntervalStep[] {
   const bases = spec.bases ?? DEFAULT_BASES
   const directions = spec.directions ?? DEFAULT_DIRECTIONS
   const steps: BuildIntervalStep[] = []
   const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < want && guard < want * 40 + 40) {
+  let lastKey: string | undefined
+  let stall = 0
+  while (steps.length < want && guard < want * 60 + 60) {
     guard++
     const base = pick(rng, bases)
     const target = pick(rng, spec.intervals)
     const direction = pick(rng, directions)
     const result = transpose(base, target, direction)
     if (!result || !inRange(result) || !inRange(base)) continue
+    const key = `${formatPitch(base)}|${target.quality}${target.number}|${direction}`
+    if (key === lastKey && stall < DISTINCT_TRIES) {
+      stall++
+      continue
+    }
+    const feature = pickFeature([base, result], spec.features, ctx)
+    lastKey = key
+    stall = 0
     steps.push({
       kind: 'buildInterval',
       id: idAt(),
@@ -168,6 +233,7 @@ function genBuildInterval(
       basePitch: base,
       target,
       direction,
+      feature,
       hints: [
         `Count letter names ${direction === 'above' ? 'up' : 'down'} from ${base.letter}, counting ${base.letter} as 1.`,
         `A ${describeInterval(target)} ${direction} ${formatPitch(base)} is ${formatPitch(result)}.`,
@@ -188,13 +254,22 @@ function genIdentifyInterval(
   const steps: IdentifyIntervalStep[] = []
   const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < want && guard < want * 40 + 40) {
+  let lastKey: string | undefined
+  let stall = 0
+  while (steps.length < want && guard < want * 60 + 60) {
     guard++
     const base = pick(rng, bases)
     const target = pick(rng, spec.intervals)
     const direction = pick(rng, directions)
     const other = transpose(base, target, direction)
     if (!other || !inRange(other) || !inRange(base)) continue
+    const key = `${formatPitch(base)}|${target.quality}${target.number}|${direction}`
+    if (key === lastKey && stall < DISTINCT_TRIES) {
+      stall++
+      continue
+    }
+    lastKey = key
+    stall = 0
     const pair: [Pitch, Pitch] =
       direction === 'above' ? [base, other] : [other, base]
     steps.push({
@@ -222,12 +297,15 @@ function genBuildChord(
   rng: () => number,
   spec: Extract<GenSpec, { kind: 'buildChord' }>,
   idAt: () => string,
+  ctx: GenCtx,
 ): BuildChordStep[] {
   const roots = spec.roots ?? defaultRootsFor(spec.qualities)
   const steps: BuildChordStep[] = []
   const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < want && guard < want * 40 + 40) {
+  let lastKey: string | undefined
+  let stall = 0
+  while (steps.length < want && guard < want * 60 + 60) {
     guard++
     const root = pick(rng, roots)
     const quality = pick(rng, spec.qualities)
@@ -238,12 +316,21 @@ function genBuildChord(
       continue
     }
     if (!ps.every(inRange)) continue
+    const key = `${formatPitch(root)}|${quality}`
+    if (key === lastKey && stall < DISTINCT_TRIES) {
+      stall++
+      continue
+    }
+    const feature = pickFeature(ps, spec.features, ctx)
+    lastKey = key
+    stall = 0
     steps.push({
       kind: 'buildChord',
       id: idAt(),
       prompt: `Build a ${chordLabel(quality)} on ${formatPitch(root)}.`,
       root,
       quality,
+      feature,
       hints: [
         `Stack thirds up from ${formatPitch(root)}.`,
         `The notes are ${ps.map((p) => formatPitch(p)).join(', ')}.`,
@@ -262,7 +349,9 @@ function genIdentifyChord(
   const steps: IdentifyChordStep[] = []
   const want = scaled(spec.count)
   let guard = 0
-  while (steps.length < want && guard < want * 40 + 40) {
+  let lastKey: string | undefined
+  let stall = 0
+  while (steps.length < want && guard < want * 60 + 60) {
     guard++
     const root = pick(rng, roots)
     const quality = pick(rng, spec.qualities)
@@ -273,6 +362,13 @@ function genIdentifyChord(
       continue
     }
     if (!ps.every(inRange)) continue
+    const key = `${formatPitch(root)}|${quality}`
+    if (key === lastKey && stall < DISTINCT_TRIES) {
+      stall++
+      continue
+    }
+    lastKey = key
+    stall = 0
     steps.push({
       kind: 'identifyChord',
       id: idAt(),
@@ -299,17 +395,18 @@ function generateSteps(lesson: Lesson): ProblemStep[] {
   const rng = mulberry32(hashString(lesson.id))
   let n = 0
   const idAt = () => `${lesson.id}-g${n++}`
+  const ctx: GenCtx = { rollIndex: 0 }
   const out: ProblemStep[] = []
   for (const spec of lesson.generate) {
     switch (spec.kind) {
       case 'buildInterval':
-        out.push(...genBuildInterval(rng, spec, idAt))
+        out.push(...genBuildInterval(rng, spec, idAt, ctx))
         break
       case 'identifyInterval':
         out.push(...genIdentifyInterval(rng, spec, idAt))
         break
       case 'buildChord':
-        out.push(...genBuildChord(rng, spec, idAt))
+        out.push(...genBuildChord(rng, spec, idAt, ctx))
         break
       case 'identifyChord':
         out.push(...genIdentifyChord(rng, spec, idAt))

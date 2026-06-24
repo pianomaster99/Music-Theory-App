@@ -148,6 +148,7 @@ Ideal Customer Profile
 1. Firestore from Firebase (currently in test mode)  
 Keep it simple for now, and don't use other software unless I tell you  
 Do not curl anything onto my computer without permission
+1. Find-skills plugin
 ## Milestones
 Built feature by feature, in this order. Each feature should be demoable on its own and builds on the previous ones. All of these together make up the MVP (every objective met).
 
@@ -202,3 +203,68 @@ Built feature by feature, in this order. Each feature should be demoable on its 
     1. Lay out and test the app well across screen sizes, including mobile.
 1. Ruler-slap reaction
     1. Pianomaster99 hits the hand with a ruler on wrong answers (animation + audio).
+
+## Implemented features & additions (post-PRD log)
+This section records everything that has actually been built, including features that go beyond the original objectives above. Nothing here replaces the spec — it documents the current state of the app so the PRD stays a complete record.
+
+1. Authentication
+    1. Email/password sign-up and sign-in (Firebase Auth), with friendly error messages for invalid email, weak password, wrong credentials, and rate limiting.
+    1. **Google sign-in (added).** "Continue with Google" button on the auth page using Firebase `signInWithPopup` + `GoogleAuthProvider`. First-time Google users get a Firestore user doc seeded automatically (`onboarded: false`) and are routed through onboarding, with their Google display name pre-filled as the suggested name. Popup-cancelled/blocked cases are handled gracefully.
+        - Setup note: the Google provider must be enabled in the Firebase console (Authentication → Sign-in method), and the app's domains added to the authorized-domains list.
+    1. `RequireAuth` guards `/map` and `/lesson/:id`; signed-out users are redirected to `/auth` (preserving their intended destination), and any signed-in user without a completed profile is sent to onboarding.
+
+1. Tutor (Pianomaster99) — current behavior
+    1. Speaks everything he displays via the Web Speech API: on concept steps he reads the title and full teaching text aloud, and he voices every prompt, hint, and piece of feedback.
+    1. Voice can be muted/unmuted (persisted). There is a single tutor voice: the app ranks installed voices and auto-picks the smoothest natural English one at a fixed rate/pitch (voice gender/speed customization was removed — see Simplifications).
+    1. His piano-keyboard "mouth" animates in time with the speech (with a fallback animation when muted).
+    1. Engages with the interface: points at the relevant part of the stage (`StagePointer`) on wrong answers, and demonstrates concepts on a live instrument (`ConceptDemo`).
+    1. Ruler-slap reaction (animation + "thwack" sound) on wrong answers.
+
+1. Interactive features
+    1. **Staff** — single treble-clef staff with draggable notes and the enharmonic spelling logic (drag down = flat, drag up = sharp), drawn in a treasure-map style.
+    1. **Hand piano** — miniature 2-octave piano with the draggable, posable hand and pressed/unpressed key states.
+    1. **Choir (added).** A third, sound-based instrument: rows of singing characters the learner activates to sound pitches. Three themes (angelic "aahs", warm Argentine tenors, and a silly high "orange"), chosen per-step by a stable seed.
+    1. **Reference table** — openable table of interval/chord info that can generate examples.
+    1. **Hint button on every problem type (added/extended).** Staff *and* piano/choir build steps now expose a "Hint" button that walks Pianomaster99 through the step's hints in order.
+    1. Per-feature one-time "FeatureTip" hints introduce how each tool works.
+
+1. Lesson flow
+    1. Concept steps (read + optional live demo + "Hear it"), build steps (staff/piano/choir), and identify steps (drag quality/number tokens) with per-step feedback.
+    1. Progress bar, step counter, "Lesson complete!" screen with a link to the next lesson, and resume-where-you-left-off.
+
+1. Audio engine
+    1. Notes always play a single instrument: the sampled Salamander Grand Piano (via Tone.js), with a plain synth fallback only while the samples are still loading. (The selectable synth flavours — music box, organ, toy — were removed; see Simplifications.)
+    1. Choir voices use FluidR3 GM vocal soundfonts (choir aahs / voice oohs) with per-theme transposition and effects.
+    1. Shared master bus (EQ + light reverb + limiter) so everything sounds warm and glued.
+
+1. Home / map & motivation
+    1. Landing page for signed-out visitors.
+    1. "Music Theory Map" home with modules and lesson cards (status: Ready / In progress / Charted / Locked), a recommended "next heading," overall voyage progress, and per-lesson mastery.
+    1. Daily streak chip and a Trophies/achievements grid.
+    1. Onboarding can skip modules the learner already knows (experience-based skips).
+
+1. Theming & UX
+    1. A single fixed backdrop: the treasure-map parchment scene (the multi-background picker and the sound-settings dialog were removed; see Simplifications).
+    1. Mobile-responsive layouts.
+    1. Unknown URLs redirect to the landing page instead of showing a blank screen.
+
+1. Persistence & data
+    1. Firestore stores the user profile, per-lesson progress, streak, and completion; progress restores across sessions/devices.
+
+1. Experimental: real-time note detection (ML) — built but NOT integrated
+    1. A separate machine-learning project (in `ml/`) trains a CRNN to transcribe notes from audio, exported to ONNX for in-browser inference, with a microphone demo page and an `onnxruntime-web` + AudioWorklet pipeline.
+    1. The model outputs the pitches sounding at the current time step; a separate tracker aggregates "heard in the last second." It was trained on synthetic data augmented with background noise, detuning, and harmonic (interval/chord) clips.
+    1. Status: intentionally kept on disk but **un-wired from the production app** (no routes or links) so it does not ship yet and does not bloat the production bundle.
+
+1. Developer tooling
+    1. Standalone `/dev/*` demo routes for the staff, piano, choir, and mascot components (not linked from the production UI).
+
+## Simplifications (scope walk-back)
+Some early objectives asked for more configurability than the product needs. To keep the app focused, the following customization options were deliberately removed in favor of a single good default. The original objectives/milestones above are kept for history, but the current product behaves as described here.
+
+1. Backgrounds — collapsed from multiple swappable scenes (space, forest, living room, dungeon, candyland, …) to **one fixed treasure-map backdrop**. Removed the background picker, the theme context/provider, and the per-user persisted theme choice. (Supersedes the "multiple swappable backgrounds" parts of the General UI Design objective and the General UI design & theming milestone.)
+1. Note instrument — collapsed from selectable instruments to **only the sampled grand piano** (synth used solely as a load-time fallback). Removed the instrument list and the persisted instrument choice. (Supersedes "customize what instrument plays the notes.")
+1. Tutor voice — collapsed from selectable voice gender + adjustable speed to **one auto-selected voice** at a fixed rate/pitch. Mute/unmute is kept. (Supersedes "customize the tutor's speaking sound.")
+1. Settings dialog — removed entirely, since it only housed the voice and instrument controls above.
+
+Note: the hand-appearance options chosen during onboarding (male/female hand and skin tone) were intentionally kept.

@@ -9,6 +9,12 @@ import type { Pitch } from '@/lib/theory/pitch'
 
 export type Direction = 'above' | 'below'
 
+/**
+ * Which hands-on tool the learner uses to build an answer. The topic of a
+ * problem comes from the course path; the tool is randomized per problem.
+ */
+export type InteractiveFeature = 'staff' | 'piano' | 'choir'
+
 /** Categories of outcome the feedback layer can react to. */
 export type MistakeCategory =
   | 'correct'
@@ -38,8 +44,14 @@ export interface ConceptStep {
   title: string
   /** Markdown-ish body text. */
   body: string
-  /** Optional pitches to render on a staff as an illustration. */
+  /** Optional pitches to render as an illustration. */
   visualPitches?: Pitch[]
+  /**
+   * How to illustrate `visualPitches`. 'staff' (default) draws them on the
+   * staff; 'piano' shows the hand-piano with those keys lit; 'choir' shows the
+   * matching singers already singing — so intros preview every tool.
+   */
+  demoFeature?: InteractiveFeature
 }
 
 export interface BuildIntervalStep extends BaseStep {
@@ -47,6 +59,8 @@ export interface BuildIntervalStep extends BaseStep {
   basePitch: Pitch
   target: Interval
   direction: Direction
+  /** Tool used to build the answer (defaults to the staff). */
+  feature?: InteractiveFeature
 }
 
 export interface IdentifyIntervalStep extends BaseStep {
@@ -61,6 +75,8 @@ export interface BuildChordStep extends BaseStep {
   kind: 'buildChord'
   root: Pitch
   quality: ChordQuality
+  /** Tool used to build the answer (defaults to the staff). */
+  feature?: InteractiveFeature
 }
 
 export interface IdentifyChordStep extends BaseStep {
@@ -91,6 +107,8 @@ export interface BuildIntervalGen {
   directions?: Direction[]
   bases?: Pitch[]
   count: number
+  /** Limit which tools may be chosen (defaults to all that fit the notes). */
+  features?: InteractiveFeature[]
 }
 export interface IdentifyIntervalGen {
   kind: 'identifyInterval'
@@ -105,6 +123,8 @@ export interface BuildChordGen {
   qualities: ChordQuality[]
   roots?: Pitch[]
   count: number
+  /** Limit which tools may be chosen (defaults to all that fit the notes). */
+  features?: InteractiveFeature[]
 }
 export interface IdentifyChordGen {
   kind: 'identifyChord'

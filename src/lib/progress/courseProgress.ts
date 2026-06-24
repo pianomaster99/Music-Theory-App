@@ -20,14 +20,14 @@ function problemStepIds(lesson: Lesson): string[] {
 /**
  * Combine the authored course with the learner's saved progress into a
  * per-lesson view: status (locked/available/in-progress/complete) and mastery.
- * Lessons unlock in order — a lesson opens once the previous one is complete.
+ * Every lesson is unlocked — learners can freely jump to any lesson — while
+ * status still reflects how far they've gotten.
  */
 export function computeCourseState(
   progress: Record<string, LessonProgress>,
 ): LessonState[] {
   const lessons = allLessons()
   const states: LessonState[] = []
-  let previousComplete = true // the first lesson is always unlocked
 
   for (const location of lessons) {
     const { lesson } = location
@@ -47,15 +47,12 @@ export function computeCourseState(
           : 0
         : Math.min(solvedCount / problemCount, 1)
 
-    const unlocked = previousComplete
     let status: LessonStatus
-    if (!unlocked) status = 'locked'
-    else if (completed) status = 'complete'
+    if (completed) status = 'complete'
     else if (touched) status = 'in-progress'
     else status = 'available'
 
     states.push({ location, status, mastery, solvedCount, problemCount })
-    previousComplete = completed
   }
 
   return states

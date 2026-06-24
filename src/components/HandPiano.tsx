@@ -1,4 +1,11 @@
-import { useId, useMemo, useRef, useState } from 'react'
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import {
   formatPitch,
   midi,
@@ -9,6 +16,22 @@ import {
 import { ensureAudio, playPitch, playPitches } from '@/lib/audio'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+
+/** Imperative controls so a tutor/mascot can drive the hand in a demo. */
+export interface HandPianoHandle {
+  /** Glide the hand (in SVG units) toward a position. */
+  moveHand(x: number, y: number): void
+  /** Ease a finger toward a curl (0 straight..1 curled) and splay (deg). */
+  moveFinger(index: number, curl: number, splay: number): void
+  /** Rest a finger on / lift it off the keys. */
+  restFinger(index: number, on: boolean): void
+  /** Press the resting fingers (same as the Play button). */
+  press(): void
+  /** Current palm grab point (SVG units) — where you'd grab to drag the hand. */
+  getHandPoint(): { x: number; y: number }
+  /** Current fingertip position (SVG units) for a given finger. */
+  getFingerTip(index: number): { x: number; y: number }
+}
 
 export interface HandPianoProps {
   /** Lowest key. Defaults to middle C (C4). */
@@ -35,97 +58,100 @@ const VIEW_HEIGHT = 500
 
 const WHITE_CLASSES = [0, 2, 4, 5, 7, 9, 11]
 
-// --- Photoreal assets (background keyed out, cropped to content) ----------
-// Knuckle points (kx, ky) were calibrated by clicking the images directly.
-const PALM_SRC = '/hand/palm.png'
-const PALM_IMG_W = 729
-const PALM_IMG_H = 968
-const PALM_W = 184
-const PALM_H = (PALM_W * PALM_IMG_H) / PALM_IMG_W
-const PALM_TOP_DY = 0
-
-interface Asset {
-  src: string
-  w: number
-  h: number
-  kx: number
-  ky: number
-}
-const FINGER_ASSET: Asset = { src: '/hand/finger.png', w: 228, h: 884, kx: 95, ky: 821 }
-const THUMB_ASSET: Asset = { src: '/hand/thumb.png', w: 375, h: 770, kx: 181, ky: 760 }
-
-// Hand knuckle positions in palm-image pixels (calibrated).
-const HAND_KNUCKLES: Record<string, [number, number]> = {
-  thumb: [708, 382],
-  index: [602, 47],
-  middle: [403, 23],
-  ring: [218, 39],
-  pinky: [67, 89],
-}
-
-function knuckleDX(imgX: number) {
-  return (imgX / PALM_IMG_W) * PALM_W - PALM_W / 2
-}
-function knuckleDY(imgY: number) {
-  return PALM_TOP_DY + (imgY / PALM_IMG_H) * PALM_H
-}
-
-const MIN_LEN = 44
-const MAX_LEN = 190
-// Widen the fingers/thumb a touch beyond their natural aspect (width only).
-const WIDTH_GAIN = 1.3
+// --- Cartoon hand (one cohesive mitten-like hand, procedurally jointed) ----
+// Flat, bright fill + a single bold dark outline reads as a cartoon glove
+// rather than a realistic (uncanny) hand. No fingernails, no skin creases.
+const SKIN = '#ffce9e'
+const SKIN_LIGHT = '#fff0dd'
+const OUTLINE = '#2a1c12'
+const OUTLINE_W = 5
+// How far the palm silhouette is scaled out from the anchor (plumper hand).
+const PALM_SCALE = 1.12
 
 type FingerState = 'above' | 'on' | 'pressing'
+
 interface FingerSpec {
   name: string
-  asset: Asset
-  baseDX: number
-  baseDY: number
-  /** Natural knuckle-to-tip length in SVG units. */
-  len: number
-  /** Resting orientation in degrees (0 = straight up, + tips toward the right). */
-  baseAngle: number
+  /** Knuckle (MCP) offset from the hand anchor, in SVG units. */
+  dx: number
+  dy: number
+  /** Resting splay angle (deg, 0 = straight up, + tips toward the right). */
+  splay: number
+  /** Phalanx lengths from knuckle to tip (3 for fingers, 2 for the thumb). */
+  segs: number[]
+  /** Finger width at the knuckle. */
+  width: number
+  splayLimit: number
+  isThumb?: boolean
 }
 
-function spec(
-  name: string,
-  asset: Asset,
-  len: number,
-  baseAngle: number,
-  nudge: [number, number] = [0, 0],
-): FingerSpec {
-  const [ix, iy] = HAND_KNUCKLES[name]
-  return {
-    name,
-    asset,
-    len,
-    baseAngle,
-    baseDX: knuckleDX(ix + nudge[0]),
-    baseDY: knuckleDY(iy + nudge[1]),
-  }
-}
-
-const FINGER_SPECS: FingerSpec[] = [
-  // Thumb nudged a touch toward the hand (left + down) so its base sits in more.
-  spec('thumb', THUMB_ASSET, 76, 30, [-26, 30]),
-  spec('index', FINGER_ASSET, 104, 8),
-  spec('middle', FINGER_ASSET, 116, 0),
-  spec('ring', FINGER_ASSET, 104, -7),
-  spec('pinky', FINGER_ASSET, 84, -16),
+// Left-to-right: pinky, ring, middle, index, then the thumb on the right —
+// matching the reference (back of a left hand, thumb to the side). Fingers are
+// longer and plumper than life so the whole hand reads cartoonish and can
+// comfortably reach every key in a two-octave span.
+const FINGERS: FingerSpec[] = [
+  { name: 'pinky', dx: -62, dy: 28, splay: -18, segs: [46, 34, 26], width: 26, splayLimit: 20 },
+  { name: 'ring', dx: -32, dy: 9, splay: -7, segs: [58, 42, 32], width: 30, splayLimit: 18 },
+  { name: 'middle', dx: 0, dy: 2, splay: 0, segs: [64, 46, 34], width: 31, splayLimit: 16 },
+  { name: 'index', dx: 30, dy: 11, splay: 9, segs: [56, 40, 30], width: 30, splayLimit: 18 },
+  { name: 'thumb', dx: 64, dy: 84, splay: 72, segs: [54, 44], width: 35, splayLimit: 34, isThumb: true },
 ]
 
-const ANGLE_LIMIT = 38 // degrees of rotation each way from the natural angle
-const STATE_DELTA: Record<FingerState, number> = { above: -6, on: 0, pressing: 7 }
+// Joint flex (degrees) at full curl. Fingers bend at MCP/PIP/DIP; the thumb at
+// MCP/IP. The sign curls the fingertip down-and-forward (away from the keys).
+const FINGER_BEND = [16, 82, 56]
+const THUMB_BEND = [24, 70]
+const CURL_SIGN = 1
+
+// State nudges the curl a touch: relaxed when above, extended when pressing.
+const STATE_CURL: Record<FingerState, number> = { above: 0.05, on: 0, pressing: -0.08 }
+const SPLAY_LIMIT_DEFAULT = 18
 const DRAG_THRESHOLD = 4
 
 interface FingerModel {
-  angle: number
-  length: number
+  /** 0 = fully extended/straight, 1 = fully curled. */
+  curl: number
+  /** User aim offset from the resting splay (deg). */
+  splay: number
   state: FingerState
 }
 
-function effLen(model: FingerModel): number {
-  return clamp(model.length + STATE_DELTA[model.state], 28, MAX_LEN + 12)
+interface Pt {
+  x: number
+  y: number
+}
+
+/** Forward kinematics: joint points from knuckle to tip for the given model. */
+function fingerPoints(
+  originX: number,
+  originY: number,
+  spec: FingerSpec,
+  model: FingerModel,
+): Pt[] {
+  const c = clamp(model.curl + STATE_CURL[model.state], 0, 1)
+  const bends = spec.isThumb ? THUMB_BEND : FINGER_BEND
+  let ang = spec.splay + model.splay
+  let x = originX + spec.dx
+  let y = originY + spec.dy
+  const pts: Pt[] = [{ x, y }]
+  for (let i = 0; i < spec.segs.length; i++) {
+    ang += c * bends[i] * CURL_SIGN
+    const r = (ang * Math.PI) / 180
+    x += Math.sin(r) * spec.segs[i]
+    y += -Math.cos(r) * spec.segs[i]
+    pts.push({ x, y })
+  }
+  return pts
+}
+
+function straightReach(spec: FingerSpec): number {
+  return spec.segs.reduce((a, b) => a + b, 0)
+}
+
+function curledReach(spec: FingerSpec): number {
+  const pts = fingerPoints(0, 0, spec, { curl: 1, splay: 0, state: 'on' })
+  const tip = pts[pts.length - 1]
+  return Math.hypot(tip.x, tip.y)
 }
 
 interface WhiteKey {
@@ -139,16 +165,103 @@ interface BlackKey {
   centerX: number
 }
 
-export function HandPiano({
-  startPitch = makePitch('C', 4),
-  octaves = 2,
-  highlight = [],
-  onPlay,
-  skinFilter = 'none',
-  className,
-}: HandPianoProps) {
+// Back-of-hand silhouette anchors relative to the hand anchor (clockwise). The
+// fingers' roots tuck under this blob so the whole thing reads as one hand.
+const PALM_OUTLINE: [number, number][] = [
+  [-58, 30], // left, under the pinky
+  [-70, 76],
+  [-60, 124],
+  [-34, 160],
+  [8, 166],
+  [44, 152],
+  [72, 120], // thumb mound
+  [80, 92], // thumb web
+  [52, 46], // up the right side under the index
+  [34, 26],
+  [-38, 24], // top edge under the fingers
+]
+
+/** A smooth closed path through anchor points (Catmull-Rom -> cubic bezier). */
+function smoothClosedPath(pts: [number, number][]): string {
+  const n = pts.length
+  let d = `M ${pts[0][0]} ${pts[0][1]} `
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n]
+    const p1 = pts[i]
+    const p2 = pts[(i + 1) % n]
+    const p3 = pts[(i + 2) % n]
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6
+    const c1y = p1[1] + (p2[1] - p0[1]) / 6
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6
+    const c2y = p2[1] - (p3[1] - p1[1]) / 6
+    d += `C ${c1x} ${c1y} ${c2x} ${c2y} ${p2[0]} ${p2[1]} `
+  }
+  return d + 'Z'
+}
+
+/** Build a tapered, rounded outline along a finger's joint points. */
+function fingerOutlinePath(pts: Pt[], baseHalf: number): string {
+  const n = pts.length
+  // Half-width per point. Plump, barely-tapered fingers with a rounded tip read
+  // as cartoon "sausage" fingers rather than realistic ones.
+  const half = pts.map((_, i) => baseHalf * (1 - 0.18 * (i / (n - 1))))
+  // Plug the root a little "into" the hand so the join hides under the palm.
+  const seg0 = { x: pts[1].x - pts[0].x, y: pts[1].y - pts[0].y }
+  const s0len = Math.hypot(seg0.x, seg0.y) || 1
+  const root: Pt = {
+    x: pts[0].x - (seg0.x / s0len) * 16,
+    y: pts[0].y - (seg0.y / s0len) * 16,
+  }
+  const chain = [root, ...pts]
+  const halfChain = [baseHalf * 1.04, ...half]
+
+  const normalAt = (i: number) => {
+    const prev = chain[Math.max(i - 1, 0)]
+    const next = chain[Math.min(i + 1, chain.length - 1)]
+    const tx = next.x - prev.x
+    const ty = next.y - prev.y
+    const len = Math.hypot(tx, ty) || 1
+    return { x: -ty / len, y: tx / len }
+  }
+
+  const left: Pt[] = []
+  const right: Pt[] = []
+  for (let i = 0; i < chain.length; i++) {
+    const nrm = normalAt(i)
+    left.push({ x: chain[i].x + nrm.x * halfChain[i], y: chain[i].y + nrm.y * halfChain[i] })
+    right.push({ x: chain[i].x - nrm.x * halfChain[i], y: chain[i].y - nrm.y * halfChain[i] })
+  }
+
+  const tip = chain[chain.length - 1]
+  const tipDir = {
+    x: tip.x - chain[chain.length - 2].x,
+    y: tip.y - chain[chain.length - 2].y,
+  }
+  const tl = Math.hypot(tipDir.x, tipDir.y) || 1
+  const tipExt: Pt = {
+    x: tip.x + (tipDir.x / tl) * halfChain[halfChain.length - 1],
+    y: tip.y + (tipDir.y / tl) * halfChain[halfChain.length - 1],
+  }
+
+  let d = `M ${left[0].x} ${left[0].y} `
+  for (let i = 1; i < left.length; i++) d += `L ${left[i].x} ${left[i].y} `
+  d += `Q ${tipExt.x} ${tipExt.y} ${right[right.length - 1].x} ${right[right.length - 1].y} `
+  for (let i = right.length - 2; i >= 0; i--) d += `L ${right[i].x} ${right[i].y} `
+  return d + 'Z'
+}
+
+export const HandPiano = forwardRef<HandPianoHandle, HandPianoProps>(function HandPiano(
+  {
+    startPitch = makePitch('C', 4),
+    octaves = 2,
+    highlight = [],
+    onPlay,
+    skinFilter = 'none',
+    className,
+  },
+  ref,
+) {
   const svgRef = useRef<SVGSVGElement>(null)
-  const rid = useId().replace(/:/g, '')
 
   const { whiteKeys, blackKeys, width } = useMemo(() => {
     const start = midi(startPitch)
@@ -172,9 +285,75 @@ export function HandPiano({
     return { whiteKeys: whites, blackKeys: blacks, width: whites.length * WHITE_W }
   }, [startPitch, octaves])
 
-  const [hand, setHand] = useState(() => ({ x: width * 0.46, y: 250 }))
+  const [hand, setHand] = useState(() => ({ x: width * 0.46, y: 235 }))
   const [fingers, setFingers] = useState<FingerModel[]>(() =>
-    FINGER_SPECS.map((s) => ({ angle: 0, length: s.len, state: 'above' as FingerState })),
+    FINGERS.map(() => ({ curl: 0.14, splay: 0, state: 'above' as FingerState })),
+  )
+
+  // --- Smooth motion --------------------------------------------------------
+  // Drags update a *target*; a rAF loop eases the rendered hand + finger
+  // geometry toward it so the whole hand glides as one fluid unit instead of
+  // snapping (and we avoid the flaky SVG `d` transition for the finger paths).
+  const targetRef = useRef<{
+    hand: Pt
+    fingers: { curl: number; splay: number }[]
+  }>({
+    hand: { x: width * 0.46, y: 235 },
+    fingers: FINGERS.map(() => ({ curl: 0.14, splay: 0 })),
+  })
+  // Latest rendered values, kept fresh for the rAF loop's closure.
+  const latest = useRef({ hand, fingers })
+  useEffect(() => {
+    latest.current = { hand, fingers }
+  }, [hand, fingers])
+  const rafRef = useRef<number | null>(null)
+
+  const ensureAnim = () => {
+    if (rafRef.current != null) return
+    const EASE = 0.35
+    const tick = () => {
+      const cur = latest.current
+      const tgt = targetRef.current
+      let done = true
+
+      const nh = {
+        x: cur.hand.x + (tgt.hand.x - cur.hand.x) * EASE,
+        y: cur.hand.y + (tgt.hand.y - cur.hand.y) * EASE,
+      }
+      if (Math.abs(tgt.hand.x - cur.hand.x) > 0.3 || Math.abs(tgt.hand.y - cur.hand.y) > 0.3) {
+        done = false
+      } else {
+        nh.x = tgt.hand.x
+        nh.y = tgt.hand.y
+      }
+
+      const nf = cur.fingers.map((f, i) => {
+        const t = tgt.fingers[i]
+        let curl = f.curl + (t.curl - f.curl) * EASE
+        let splay = f.splay + (t.splay - f.splay) * EASE
+        if (Math.abs(t.curl - f.curl) > 0.004 || Math.abs(t.splay - f.splay) > 0.08) {
+          done = false
+        } else {
+          curl = t.curl
+          splay = t.splay
+        }
+        return curl === f.curl && splay === f.splay ? f : { ...f, curl, splay }
+      })
+
+      latest.current = { hand: nh, fingers: nf }
+      setHand(nh)
+      setFingers(nf)
+
+      rafRef.current = done ? null : requestAnimationFrame(tick)
+    }
+    rafRef.current = requestAnimationFrame(tick)
+  }
+
+  useEffect(
+    () => () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
+    },
+    [],
   )
 
   const drag = useRef<{
@@ -185,8 +364,8 @@ export function HandPiano({
     moved: boolean
     handX: number
     handY: number
-    baseX: number
-    baseY: number
+    knuckleX: number
+    knuckleY: number
   } | null>(null)
 
   const highlightMidis = useMemo(() => new Set(highlight.map((p) => midi(p))), [highlight])
@@ -201,21 +380,11 @@ export function HandPiano({
     }
   }
 
-  const fingerGeom = (i: number, model = fingers[i], h = hand) => {
-    const s = FINGER_SPECS[i]
-    const baseX = h.x + s.baseDX
-    const baseY = h.y + s.baseDY
-    const eff = model.angle + s.baseAngle
-    const L = effLen(model)
-    const rad = (eff * Math.PI) / 180
-    return {
-      baseX,
-      baseY,
-      eff,
-      L,
-      tipX: baseX + Math.sin(rad) * L,
-      tipY: baseY - Math.cos(rad) * L,
-    }
+  const geomOf = (i: number, model = fingers[i], h = hand) => {
+    const spec = FINGERS[i]
+    const pts = fingerPoints(h.x, h.y, spec, model)
+    const tip = pts[pts.length - 1]
+    return { spec, pts, knuckle: pts[0], tipX: tip.x, tipY: tip.y }
   }
 
   // A finger only addresses a black key if its tip is actually on the black key
@@ -238,7 +407,7 @@ export function HandPiano({
 
   const fingerKeys = fingers.map((f, i) => {
     if (f.state === 'above') return null
-    const g = fingerGeom(i, f)
+    const g = geomOf(i, f)
     return keyAt(g.tipX, g.tipY)
   })
   const restingMidis = new Set(
@@ -264,8 +433,8 @@ export function HandPiano({
       moved: false,
       handX: hand.x,
       handY: hand.y,
-      baseX: 0,
-      baseY: 0,
+      knuckleX: 0,
+      knuckleY: 0,
     }
   }
 
@@ -274,7 +443,7 @@ export function HandPiano({
     e.stopPropagation()
     void ensureAudio()
     ;(e.target as Element).setPointerCapture(e.pointerId)
-    const g = fingerGeom(i)
+    const g = geomOf(i)
     drag.current = {
       kind: 'finger',
       index: i,
@@ -283,8 +452,8 @@ export function HandPiano({
       moved: false,
       handX: hand.x,
       handY: hand.y,
-      baseX: g.baseX,
-      baseY: g.baseY,
+      knuckleX: g.knuckle.x,
+      knuckleY: g.knuckle.y,
     }
   }
 
@@ -300,22 +469,27 @@ export function HandPiano({
       const rect = svgRef.current?.getBoundingClientRect()
       const ratioX = width / (rect?.width ?? width)
       const ratioY = VIEW_HEIGHT / (rect?.height ?? VIEW_HEIGHT)
-      setHand({
+      targetRef.current.hand = {
         x: clamp(d.handX + dx * ratioX, 10, width - 10),
-        y: clamp(d.handY + dy * ratioY, 80, VIEW_HEIGHT - PALM_H * 0.5),
-      })
+        y: clamp(d.handY + dy * ratioY, 70, VIEW_HEIGHT - 150),
+      }
+      ensureAnim()
     } else {
-      // Dragging a fingertip both aims (rotation) and stretches (length only).
+      // Dragging a fingertip aims it (splay) and curls/extends it: dragging the
+      // tip away from the knuckle extends the finger, dragging it in curls it.
+      const spec = FINGERS[d.index]
       const p = toSvg(e.clientX, e.clientY)
-      const vx = p.x - d.baseX
-      const vy = p.y - d.baseY
-      const eff = (Math.atan2(vx, -vy) * 180) / Math.PI
-      const user = clamp(eff - FINGER_SPECS[d.index].baseAngle, -ANGLE_LIMIT, ANGLE_LIMIT)
-      const dist = Math.hypot(vx, vy)
-      const length = clamp(dist - STATE_DELTA[fingers[d.index].state], MIN_LEN, MAX_LEN)
-      setFingers((prev) =>
-        prev.map((f, idx) => (idx === d.index ? { ...f, angle: user, length } : f)),
-      )
+      const vx = p.x - d.knuckleX
+      const vy = p.y - d.knuckleY
+      const aim = (Math.atan2(vx, -vy) * 180) / Math.PI
+      const limit = spec.splayLimit ?? SPLAY_LIMIT_DEFAULT
+      const splay = clamp(aim - spec.splay, -limit, limit)
+      const reach = Math.hypot(vx, vy)
+      const maxR = straightReach(spec)
+      const minR = curledReach(spec)
+      const curl = clamp((maxR - reach) / Math.max(maxR - minR, 1), 0, 1)
+      targetRef.current.fingers[d.index] = { curl, splay }
+      ensureAnim()
     }
   }
 
@@ -329,7 +503,7 @@ export function HandPiano({
           idx === d.index ? { ...f, state: f.state === 'above' ? 'on' : 'above' } : f,
         ),
       )
-      const g = fingerGeom(d.index)
+      const g = geomOf(d.index)
       const key = keyAt(g.tipX, g.tipY)
       if (key) playPitch(key.pitch)
     }
@@ -357,6 +531,45 @@ export function HandPiano({
     .filter((p): p is Pitch => !!p)
     .map((p) => formatPitch(p))
 
+  // Let a parent (e.g. the demo mascot) drive the hand. The existing rAF easing
+  // makes all of these glide smoothly.
+  useImperativeHandle(ref, () => ({
+    moveHand: (x, y) => {
+      targetRef.current.hand = {
+        x: clamp(x, 10, width - 10),
+        y: clamp(y, 70, VIEW_HEIGHT - 150),
+      }
+      ensureAnim()
+    },
+    moveFinger: (index, curl, splay) => {
+      const t = targetRef.current.fingers[index]
+      if (!t) return
+      targetRef.current.fingers[index] = { curl: clamp(curl, 0, 1), splay }
+      ensureAnim()
+    },
+    restFinger: (index, on) => {
+      setFingers((prev) =>
+        prev.map((f, idx) => (idx === index ? { ...f, state: on ? 'on' : 'above' } : f)),
+      )
+    },
+    press: () => handlePlay(),
+    getHandPoint: () => ({
+      x: latest.current.hand.x,
+      y: latest.current.hand.y + 88,
+    }),
+    getFingerTip: (index) => {
+      const spec = FINGERS[index]
+      const pts = fingerPoints(
+        latest.current.hand.x,
+        latest.current.hand.y,
+        spec,
+        latest.current.fingers[index],
+      )
+      const tip = pts[pts.length - 1]
+      return { x: tip.x, y: tip.y }
+    },
+  }))
+
   return (
     <div className={cn('w-full text-ink', className)}>
       <svg
@@ -367,13 +580,6 @@ export function HandPiano({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        <defs>
-          <filter id={`rough-${rid}`} x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.02 0.03" numOctaves={2} seed={5} result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale={1.4} xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-
         {/* White keys */}
         {whiteKeys.map((k) => {
           const pressed = pressedMidis.has(k.midi)
@@ -446,86 +652,126 @@ export function HandPiano({
           )
         })}
 
-        {/* Soft contact shadow under the hand */}
-        <ellipse cx={hand.x} cy={hand.y + PALM_TOP_DY + PALM_H - 6} rx={PALM_W * 0.5} ry={16} fill="#000" opacity={0.13} />
+        {/* The hand: one cohesive cartoon back-of-hand with jointed fingers. */}
+        <g style={{ filter: skinFilter }}>
+          {/* Soft contact shadow */}
+          <ellipse
+            cx={hand.x + 2}
+            cy={hand.y + 150}
+            rx={92}
+            ry={20}
+            fill="#000"
+            opacity={0.12}
+          />
 
-        {/* Back of the hand */}
-        <image
-          href={PALM_SRC}
-          x={hand.x - PALM_W / 2}
-          y={hand.y + PALM_TOP_DY}
-          width={PALM_W}
-          height={PALM_H}
-          preserveAspectRatio="none"
-          className="cursor-move"
-          onPointerDown={onHandPointerDown}
-          style={{ transition: 'all 120ms ease-out', filter: skinFilter }}
-        />
+          {/* Fingers (drawn first; their roots get tucked under the hand). */}
+          {FINGERS.map((spec, i) => {
+            const f = fingers[i]
+            const pts = fingerPoints(hand.x, hand.y, spec, f)
+            const nudge = f.state === 'above' ? 0 : f.state === 'on' ? 3 : 6
+            return (
+              <g
+                key={spec.name}
+                transform={`translate(0 ${-nudge})`}
+                style={{ transition: 'transform 140ms ease-out' }}
+              >
+                <path
+                  d={fingerOutlinePath(pts, spec.width / 2)}
+                  fill={SKIN}
+                  stroke={OUTLINE}
+                  strokeWidth={OUTLINE_W}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              </g>
+            )
+          })}
 
-        {/* Fingers, drawn on top so the knuckles stay visible. The finger's
-            calibrated knuckle point is pinned to the hand knuckle (the pivot),
-            so it rotates and stretches from there. */}
-        {FINGER_SPECS.map((s, i) => {
-          const f = fingers[i]
-          const g = fingerGeom(i, f)
-          const a = s.asset
-          // Width fixed at the finger's natural width; only height scales with
-          // length, so stretching lengthens without widening.
-          const natScale = s.len / a.ky
-          const displayW = a.w * natScale * WIDTH_GAIN
-          const scaleV = g.L / a.ky
-          const displayH = a.h * scaleV
-          const handleR = displayW / 2 + 7
-          return (
-            <g
-              key={s.name}
-              transform={`translate(${g.baseX} ${g.baseY}) rotate(${g.eff})`}
-              style={{ transition: 'transform 140ms ease-out' }}
-            >
-              <image
-                href={a.src}
-                x={-displayW * (a.kx / a.w)}
-                y={-g.L}
-                width={displayW}
-                height={displayH}
-                preserveAspectRatio="none"
-                pointerEvents="none"
-                style={{ transition: 'all 140ms ease-out', filter: skinFilter }}
-              />
-              {f.state === 'pressing' && (
-                <ellipse cx={0} cy={-g.L + 6} rx={displayW * 0.42} ry={6} fill="#000" opacity={0.12} pointerEvents="none" />
-              )}
-              {/* Grab handle near the fingertip */}
-              <circle
-                cx={0}
-                cy={-g.L + 8}
-                r={handleR}
-                fill="transparent"
-                className="cursor-grab"
-                onPointerDown={(e) => onFingerPointerDown(e, i)}
-              />
-            </g>
-          )
-        })}
+          {/* Hand body, painted over the finger roots to unify them. */}
+          <path
+            d={smoothClosedPath(
+              PALM_OUTLINE.map(([x, y]) => [
+                hand.x + x * PALM_SCALE,
+                hand.y + y * PALM_SCALE,
+              ]),
+            )}
+            fill={SKIN}
+            stroke={OUTLINE}
+            strokeWidth={OUTLINE_W}
+            strokeLinejoin="round"
+            className="cursor-move"
+            onPointerDown={onHandPointerDown}
+          />
+          {/* Single soft cartoon highlight on the back of the hand */}
+          <ellipse
+            cx={hand.x - 8}
+            cy={hand.y + 70}
+            rx={42}
+            ry={50}
+            fill={SKIN_LIGHT}
+            opacity={0.5}
+            pointerEvents="none"
+          />
+
+          {/* Per-finger overlay: a little dot when resting, plus the (invisible)
+              grab handle at the fingertip. No nails/creases — keeps it cartoon. */}
+          {FINGERS.map((spec, i) => {
+            const f = fingers[i]
+            const nudge = f.state === 'above' ? 0 : f.state === 'on' ? 3 : 6
+            const pts = fingerPoints(hand.x, hand.y, spec, f).map((p) => ({
+              x: p.x,
+              y: p.y - nudge,
+            }))
+            const tip = pts[pts.length - 1]
+            const handleR = spec.width * 0.75
+            const target = f.state !== 'above'
+            return (
+              <g key={`d-${spec.name}`}>
+                {target && (
+                  <circle
+                    cx={tip.x}
+                    cy={tip.y}
+                    r={5}
+                    fill="#6b8f3a"
+                    stroke="#fff"
+                    strokeWidth={1.5}
+                    opacity={0.95}
+                    pointerEvents="none"
+                  />
+                )}
+                {/* Invisible grab handle at the fingertip */}
+                <circle
+                  cx={tip.x}
+                  cy={tip.y}
+                  r={handleR}
+                  fill="transparent"
+                  className="cursor-grab"
+                  onPointerDown={(e) => onFingerPointerDown(e, i)}
+                />
+              </g>
+            )
+          })}
+        </g>
       </svg>
 
       <div className="mt-3 flex items-center justify-between gap-3">
-        <p className="text-sm text-ink-soft">
+        <p className="text-base text-ink-soft">
           Resting on:{' '}
-          <span className="font-medium text-ink">
+          <span className="font-semibold text-ink">
             {restingSummary.length ? restingSummary.join(' \u00B7 ') : '\u2014'}
           </span>
         </p>
-        <Button onClick={handlePlay}>Play</Button>
+        <Button size="lg" onClick={handlePlay}>
+          Play
+        </Button>
       </div>
-      <p className="mt-1 text-xs text-ink-soft">
-        Drag the back of the hand to move it. Drag a fingertip to aim and stretch
-        it. Click a fingertip to rest it on a key, then press Play. To play a
-        black key, the fingertip must sit on the black key.
+      <p className="mt-1 text-sm text-ink-soft">
+        Drag the hand to move it; drag a fingertip to aim &amp; curl it; tap a
+        fingertip to rest it on a key, then press Play.
       </p>
     </div>
   )
-}
+})
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))

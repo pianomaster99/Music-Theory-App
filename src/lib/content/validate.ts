@@ -1,4 +1,4 @@
-import { classifyChord } from '@/lib/theory/chords'
+import { classifyChord, chordPitches } from '@/lib/theory/chords'
 import {
   intervalBetween,
   intervalsEqual,
@@ -134,6 +134,85 @@ function validateBuildChord(
   if (classified && spellingEqual(classified.root, step.root)) {
     return result('rightNumberWrongQuality')
   }
+  return result('wrong')
+}
+
+// --- Sound-based checks for the piano / choir tools ------------------------
+// Unlike the staff, the piano and choir only know *sounding* pitch (no chosen
+// spelling), so we validate by ear: the right notes sounding, spelling aside.
+
+function midiSet(pitches: Pitch[]): Set<number> {
+  return new Set(pitches.map(midi))
+}
+
+function sameMidiSet(a: Pitch[], b: Pitch[]): boolean {
+  const sa = midiSet(a)
+  const sb = midiSet(b)
+  if (sa.size !== sb.size) return false
+  for (const m of sa) if (!sb.has(m)) return false
+  return true
+}
+
+function pitchClassSet(pitches: Pitch[]): Set<number> {
+  return new Set(pitches.map((p) => ((midi(p) % 12) + 12) % 12))
+}
+
+function samePitchClassSet(a: Pitch[], b: Pitch[]): boolean {
+  const sa = pitchClassSet(a)
+  const sb = pitchClassSet(b)
+  if (sa.size !== sb.size) return false
+  for (const c of sa) if (!sb.has(c)) return false
+  return true
+}
+
+/** Build-an-interval, answered by sounding pitches (piano/choir). */
+export function validateBuildIntervalSound(
+  step: BuildIntervalStep,
+  pitches: Pitch[],
+): ValidationResult {
+  const correct = transpose(step.basePitch, step.target, step.direction)
+  if (!correct) return result('wrong')
+  if (sameMidiSet(pitches, [step.basePitch, correct])) return result('correct')
+
+  // Right interval, wrong side of the base note.
+  const flip = step.direction === 'above' ? 'below' : 'above'
+  const flipped = transpose(step.basePitch, step.target, flip)
+  if (flipped && sameMidiSet(pitches, [step.basePitch, flipped])) {
+    return result('wrongDirection')
+  }
+
+  // Exactly two notes that share the base but land the wrong distance away:
+  // report whether the number is at least right (helps the feedback layer).
+  if (pitches.length === 2 && midiSet(pitches).has(midi(step.basePitch))) {
+    const other = pitches.find((p) => midi(p) !== midi(step.basePitch))
+    if (other) {
+      const actual = intervalBetween(step.basePitch, other)
+      if (actual && actual.number === step.target.number) {
+        return result('rightNumberWrongQuality')
+      }
+    }
+  }
+  return result('wrong')
+}
+
+/**
+ * Build-a-chord, answered by sounding pitches (piano/choir). The piano/choir
+ * have no chosen spelling, so we compare against the canonical voicing by ear
+ * rather than relying on classifyChord (which is spelling-sensitive).
+ */
+export function validateBuildChordSound(
+  step: BuildChordStep,
+  pitches: Pitch[],
+): ValidationResult {
+  let expected: Pitch[]
+  try {
+    expected = chordPitches(step.root, step.quality)
+  } catch {
+    return result('wrong')
+  }
+  if (sameMidiSet(pitches, expected)) return result('correct')
+  // Right notes, but voiced in the wrong octave(s).
+  if (samePitchClassSet(pitches, expected)) return result('offByOctave')
   return result('wrong')
 }
 

@@ -15,7 +15,7 @@ export default function LessonPage() {
           We couldn&rsquo;t find a lesson called &ldquo;{lessonId}&rdquo;.
         </p>
         <Button asChild className="mt-6">
-          <Link to="/">Back to map</Link>
+          <Link to="/map">Back to map</Link>
         </Button>
       </div>
     )

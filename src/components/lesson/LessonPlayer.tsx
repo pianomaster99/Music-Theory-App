@@ -14,8 +14,6 @@ import { useAuth } from '@/lib/auth/AuthProvider'
 import { loadLessonProgress, saveLessonProgress } from '@/lib/progress/progress'
 import { recordActivity } from '@/lib/progress/streak'
 import { ReferenceTable } from '@/components/ReferenceTable'
-import { BackgroundPicker } from '@/components/BackgroundPicker'
-import { SettingsDialog } from '@/components/SettingsDialog'
 import { LessonStage } from '@/components/LessonStage'
 import {
   cancelSpeech,
@@ -25,6 +23,7 @@ import {
   speak,
 } from '@/lib/speech'
 import { Mascot, type MascotMood } from './Mascot'
+import { ConceptDemo } from './ConceptDemo'
 import { BuildIntervalView } from './BuildIntervalView'
 import { IdentifyIntervalView } from './IdentifyIntervalView'
 import { BuildChordView } from './BuildChordView'
@@ -55,10 +54,13 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const total = lesson.steps.length
   const follow = useMemo(() => nextLesson(lesson.id), [lesson.id])
 
-  // The tutor speaks whatever it says in its bubble.
-  useEffect(() => {
-    speak(mascot.message)
-  }, [mascot.message])
+  // Whenever Pianomaster99 puts text in his bubble, he says it out loud. We
+  // set the bubble and speak together (rather than reacting to message changes)
+  // so identical lines — e.g. the same feedback twice — still get spoken.
+  const say = (message: string, mood: MascotMood) => {
+    setMascot({ message, mood })
+    speak(message)
+  }
 
   useEffect(() => () => cancelSpeech(), [])
 
@@ -118,11 +120,15 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     setSolved(
       step.kind !== 'concept' && completedStepIds.current.includes(step.id),
     )
-    setMascot({ message: defaultMascotMessage(step), mood: 'neutral' })
+    const msg = defaultMascotMessage(step)
+    setMascot({ message: msg, mood: 'neutral' })
+    // On concept steps, read the actual teaching text aloud (not just the short
+    // "read this" bubble), so Pianomaster99 narrates everything he shows.
+    speak(step.kind === 'concept' ? `${step.title}. ${step.body}` : msg)
   }, [step])
 
   const handleResult = (result: ValidationResult, message: string) => {
-    setMascot({ message, mood: result.correct ? 'happy' : 'thinking' })
+    say(message, result.correct ? 'happy' : 'thinking')
     if (result.correct) {
       setSolved(true)
       if (!completedStepIds.current.includes(step.id)) {
@@ -135,6 +141,11 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       setSlapToken((t) => t + 1)
       void playThwack()
     }
+  }
+
+  // Pianomaster99 reads the hint aloud and shows it in his speech bubble.
+  const handleHint = (text: string) => {
+    say(text, 'thinking')
   }
 
   // Update the daily streak once per lesson session, on first solve.
@@ -192,7 +203,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 </Button>
               ) : null}
               <Button asChild variant="outline">
-                <Link to="/">Back to map</Link>
+                <Link to="/map">Back to map</Link>
               </Button>
             </div>
           </CardContent>
@@ -202,10 +213,10 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   }
 
   return (
-    <div className="mx-auto max-w-xl space-y-5 px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-8">
       <div className="space-y-1">
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-ink-soft">
-          <Link to="/" className="hover:underline">
+          <Link to="/map" className="hover:underline">
             &larr; Map
           </Link>
           <div className="flex flex-wrap items-center gap-2">
@@ -219,8 +230,6 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 {speechOn ? '🔊 Voice' : '🔇 Voice'}
               </button>
             )}
-            <BackgroundPicker compact />
-            <SettingsDialog />
             <ReferenceTable />
             <span>
               Step {stepIndex + 1} of {total}
@@ -228,27 +237,38 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           </div>
         </div>
         <Progress value={((stepIndex + (canAdvance ? 1 : 0)) / total) * 100} />
-        <h1 className="pt-2 font-display text-2xl">{lesson.title}</h1>
+        <h1 className="pt-2 font-display text-3xl">{lesson.title}</h1>
       </div>
 
-      <Mascot message={mascot.message} mood={mascot.mood} slapToken={slapToken} />
+      <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(300px,380px)_minmax(0,1fr)] lg:items-start">
+        <aside className="space-y-4 lg:sticky lg:top-6">
+          <Mascot
+            message={mascot.message}
+            mood={mascot.mood}
+            slapToken={slapToken}
+          />
+        </aside>
 
-      <LessonStage>
-        <StepBody
-          key={step.id}
-          step={step}
-          solved={solved}
-          onResult={handleResult}
-        />
-      </LessonStage>
+        <main className="space-y-5">
+          <LessonStage resetKey={step.id}>
+            <StepBody
+              key={step.id}
+              step={step}
+              solved={solved}
+              onResult={handleResult}
+              onHint={handleHint}
+            />
+          </LessonStage>
 
-      {canAdvance && (
-        <div className="flex justify-end">
-          <Button onClick={advance}>
-            {stepIndex + 1 >= total ? 'Finish' : 'Continue'}
-          </Button>
-        </div>
-      )}
+          {canAdvance && (
+            <div className="flex justify-end">
+              <Button onClick={advance}>
+                {stepIndex + 1 >= total ? 'Finish' : 'Continue'}
+              </Button>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   )
 }
@@ -257,10 +277,12 @@ function StepBody({
   step,
   solved,
   onResult,
+  onHint,
 }: {
   step: Step
   solved: boolean
   onResult: (result: ValidationResult, message: string) => void
+  onHint: (text: string) => void
 }) {
   if (step.kind === 'concept') {
     const visual: StaffNote[] | null = step.visualPitches
@@ -270,11 +292,23 @@ function StepBody({
           tone: 'given' as const,
         }))
       : null
+    const demoFeature =
+      step.demoFeature === 'piano' || step.demoFeature === 'choir'
+        ? step.demoFeature
+        : null
     return (
       <div className="space-y-4">
-        <h2 className="font-display text-xl">{step.title}</h2>
-        <p className="leading-relaxed text-ink">{step.body}</p>
-        {visual && <Staff notes={visual} />}
+        <h2 className="font-display text-2xl">{step.title}</h2>
+        <p className="text-lg leading-relaxed text-ink">{step.body}</p>
+        {step.visualPitches && demoFeature ? (
+          <ConceptDemo
+            feature={demoFeature}
+            pitches={step.visualPitches}
+            seed={step.id}
+          />
+        ) : (
+          visual && <Staff notes={visual} />
+        )}
         {step.visualPitches && step.visualPitches.length > 0 && (
           <div className="flex justify-center">
             <Button
@@ -296,18 +330,38 @@ function StepBody({
 
   return (
     <div className="space-y-4">
-      <p className="text-center text-lg text-ink">{step.prompt}</p>
+      <p className="text-center text-xl text-ink">{step.prompt}</p>
       {step.kind === 'buildInterval' && (
-        <BuildIntervalView step={step} solved={solved} onResult={onResult} />
+        <BuildIntervalView
+          step={step}
+          solved={solved}
+          onResult={onResult}
+          onHint={onHint}
+        />
       )}
       {step.kind === 'identifyInterval' && (
-        <IdentifyIntervalView step={step} solved={solved} onResult={onResult} />
+        <IdentifyIntervalView
+          step={step}
+          solved={solved}
+          onResult={onResult}
+          onHint={onHint}
+        />
       )}
       {step.kind === 'buildChord' && (
-        <BuildChordView step={step} solved={solved} onResult={onResult} />
+        <BuildChordView
+          step={step}
+          solved={solved}
+          onResult={onResult}
+          onHint={onHint}
+        />
       )}
       {step.kind === 'identifyChord' && (
-        <IdentifyChordView step={step} solved={solved} onResult={onResult} />
+        <IdentifyChordView
+          step={step}
+          solved={solved}
+          onResult={onResult}
+          onHint={onHint}
+        />
       )}
     </div>
   )

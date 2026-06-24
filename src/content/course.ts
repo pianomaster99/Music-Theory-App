@@ -6,7 +6,8 @@ import { materializeLesson } from './generate'
 
 // The single course. Modules are authored elsewhere and registered here. Order
 // is the learning path: intervals build the thirds that triads stack, and
-// triads are the base that seventh chords extend.
+// triads are the base that sevenths extend. Each module opens with its own
+// basics lesson, so there is no separate intro chapter.
 export const course: Course = {
   id: 'music-theory',
   subject: 'Music Theory',

@@ -18,8 +18,9 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
     return <Navigate to="/auth" replace state={{ from: location.pathname }} />
   }
 
-  // New accounts must finish onboarding before reaching the map.
-  if (profile && !profile.onboarded) {
+  // New accounts (including first-time Google sign-ins with no profile doc yet)
+  // must finish onboarding before reaching the map.
+  if (!profile || !profile.onboarded) {
     return <Navigate to="/onboarding" replace />
   }
 

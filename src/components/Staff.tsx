@@ -187,7 +187,17 @@ export function Staff({
           onPointerUp={handlePointerUp}
         >
           <defs>
-            <filter id={`rough-${roughId}`} x="-15%" y="-15%" width="130%" height="130%">
+            {/* User-space region covering the whole staff: a per-element
+                bounding-box region is far too short for thin lines and clips
+                the displaced wave, which showed up as gaps in the staff lines. */}
+            <filter
+              id={`rough-${roughId}`}
+              filterUnits="userSpaceOnUse"
+              x={0}
+              y={0}
+              width={VIEW_WIDTH}
+              height={height}
+            >
               <feTurbulence
                 type="fractalNoise"
                 baseFrequency="0.018 0.024"
@@ -269,6 +279,7 @@ export function Staff({
                     </text>
                   )}
                   <ellipse
+                    data-note-id={note.id}
                     cx={cx}
                     cy={cy}
                     rx={NOTE_RX}

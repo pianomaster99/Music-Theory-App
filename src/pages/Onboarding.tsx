@@ -35,7 +35,9 @@ export default function Onboarding() {
   const navigate = useNavigate()
 
   const [step, setStep] = useState(0)
-  const [displayName, setDisplayName] = useState(profile?.displayName ?? '')
+  const [displayName, setDisplayName] = useState(
+    profile?.displayName || user?.displayName || '',
+  )
   const [handGender, setHandGender] = useState<HandGender>('male')
   const [handSkin, setHandSkin] = useState<HandSkin>('light')
   const [dailyMinutes, setDailyMinutes] = useState(20)
@@ -50,7 +52,7 @@ export default function Onboarding() {
     )
   }
   if (!user) return <Navigate to="/auth" replace />
-  if (profile?.onboarded) return <Navigate to="/" replace />
+  if (profile?.onboarded) return <Navigate to="/map" replace />
 
   const steps = ['Name', 'Your hand', 'Daily time', 'Experience']
   const last = steps.length - 1
@@ -68,7 +70,7 @@ export default function Onboarding() {
       setQuestionScale(scaleForMinutes(dailyMinutes))
       await applyExperienceSkips(user.uid, experience)
       await reloadProfile()
-      navigate('/', { replace: true })
+      navigate('/map', { replace: true })
     } catch {
       setBusy(false)
     }

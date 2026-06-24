@@ -5,17 +5,17 @@ import './index.css'
 import App from './App.tsx'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/lib/auth/AuthProvider'
-import { BackgroundProvider } from '@/lib/backgrounds'
+import { AppBackground } from '@/lib/backgrounds'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <BackgroundProvider>
+      <AppBackground>
         <AuthProvider>
           <App />
           <Toaster />
         </AuthProvider>
-      </BackgroundProvider>
+      </AppBackground>
     </BrowserRouter>
   </StrictMode>,
 )

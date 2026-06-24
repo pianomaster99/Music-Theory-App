@@ -11,6 +11,29 @@ export const seventhsModule: Module = {
     'A triad plus a seventh. Build and name major, minor, dominant, diminished, and half-diminished sevenths.',
   lessons: [
     {
+      id: 'sevenths-basics',
+      title: 'What is a seventh chord?',
+      summary: 'Add one more third on top of a triad — four notes in all.',
+      steps: [
+        {
+          kind: 'concept',
+          id: 'sb-c1',
+          title: 'One more third on top',
+          body: 'A seventh chord is just a triad with one more third stacked on top, for four notes in total. That new top note lands a seventh above the root — which is where the name comes from. Stacking thirds from C gives C, E, G, B.',
+          visualPitches: [pitch('C', 4), pitch('E', 4), pitch('G', 4), pitch('B', 4)],
+          demoFeature: 'piano',
+        },
+        {
+          kind: 'concept',
+          id: 'sb-c2',
+          title: 'Counting to the seventh',
+          body: 'To find the seventh, count letters up from the root: C(1) D(2) E(3) F(4) G(5) A(6) B(7). The chord keeps the same root, third, and fifth as the triad and simply adds that seventh on top. Tap the singers to compare the fuller sound.',
+          visualPitches: [pitch('C', 4), pitch('E', 4), pitch('G', 4), pitch('B', 4)],
+          demoFeature: 'choir',
+        },
+      ],
+    },
+    {
       id: 'sevenths-major',
       title: 'Major 7th chords',
       summary: 'A major triad plus a major seventh — lush and dreamy.',

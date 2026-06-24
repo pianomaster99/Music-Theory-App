@@ -11,6 +11,29 @@ export const triadsModule: Module = {
     'Three notes stacked in thirds. Build and name major, minor, diminished, and augmented triads.',
   lessons: [
     {
+      id: 'triads-basics',
+      title: 'What is a triad?',
+      summary: 'Three notes stacked in thirds — before we name the flavors.',
+      steps: [
+        {
+          kind: 'concept',
+          id: 'tb-c1',
+          title: 'Notes played together',
+          body: 'When two or more notes sound at the same time, that is a chord. The most common chord is a triad: three notes stacked in thirds — every other letter. Starting on C you get C, E, G.',
+          visualPitches: [pitch('C', 4), pitch('E', 4), pitch('G', 4)],
+          demoFeature: 'piano',
+        },
+        {
+          kind: 'concept',
+          id: 'tb-c2',
+          title: 'Stacking in thirds',
+          body: 'Skip a letter each time: C (skip D) E (skip F) G. Tap the singers to listen — the three notes blend into one full sound. Next we will learn the different flavors of triad and build them ourselves.',
+          visualPitches: [pitch('C', 4), pitch('E', 4), pitch('G', 4)],
+          demoFeature: 'choir',
+        },
+      ],
+    },
+    {
       id: 'triads-major',
       title: 'Major triads',
       summary: 'A major third with a minor third on top — bright and stable.',

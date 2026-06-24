@@ -10,8 +10,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { course } from '@/content/course'
-import { BackgroundPicker } from '@/components/BackgroundPicker'
-import { SettingsDialog } from '@/components/SettingsDialog'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { useCourseProgress } from '@/lib/progress/useCourseProgress'
 import type { LessonState, LessonStatus } from '@/lib/progress/courseProgress'
@@ -49,15 +47,13 @@ export default function Home() {
   )
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:py-12">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:py-12">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-2 text-ink-soft">
         <span className="font-display text-lg text-ink">
           {firstName ? `Ahoy, ${firstName}` : 'Ahoy'}
         </span>
         <div className="flex flex-wrap items-center gap-2">
           {!loading && <StreakChip streak={streak} />}
-          <BackgroundPicker />
-          <SettingsDialog />
           <Button variant="ghost" size="sm" onClick={() => void signOutUser()}>
             Sign out
           </Button>
@@ -101,9 +97,9 @@ export default function Home() {
       <div className="space-y-8">
         {course.modules.map((module) => (
           <section key={module.id}>
-            <h2 className="font-display text-2xl text-ink">{module.title}</h2>
+            <h2 className="font-display text-3xl text-ink">{module.title}</h2>
             <p className="mb-4 text-ink-soft">{module.description}</p>
-            <div className="space-y-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               {module.lessons.map((lesson, i) => {
                 const state = stateById.get(lesson.id)
                 const status = state?.status ?? 'available'
@@ -111,7 +107,9 @@ export default function Home() {
                 return (
                   <Card
                     key={lesson.id}
-                    className={locked ? 'opacity-60' : undefined}
+                    className={
+                      'h-full ' + (locked ? 'opacity-60' : '')
+                    }
                   >
                     <CardHeader>
                       <div className="flex items-center justify-between gap-3">
