@@ -13,10 +13,14 @@ service cloud.firestore {
     //   - updatedAt:   timestamp (optional)
     //
     // Subcollections under users/{uid} (per-user, owner-only):
-    //   - progress/{lessonId}: lesson progress state
-    //   - stats/{docId}:       streaks, mastery, aggregate stats
-    //   Detailed field schemas for these are validated in a later
-    //   milestone; for now they are strictly scoped to the owner.
+    //   - progress/{lessonId}:
+    //       - currentStepIndex: number  (required, 0..1000)
+    //       - completedStepIds: list    (required, <=500 entries)
+    //       - completed:        bool    (required)
+    //       - updatedAt:        timestamp (required)
+    //       - completedAt:      timestamp (optional)
+    //   - stats/{docId}: streaks, mastery, aggregate stats. Schema
+    //       validated in a later milestone; owner-only for now.
     //
     // NOTE: This is a prototype rule set. Review carefully before a
     // broad launch.
@@ -39,6 +43,19 @@ service cloud.firestore {
         && request.resource.data.createdAt is timestamp;
     }
 
+    function isValidProgress() {
+      return request.resource.data.keys().hasOnly(['currentStepIndex', 'completedStepIds', 'completed', 'updatedAt', 'completedAt'])
+        && request.resource.data.keys().hasAll(['currentStepIndex', 'completedStepIds', 'completed', 'updatedAt'])
+        && request.resource.data.currentStepIndex is number
+        && request.resource.data.currentStepIndex >= 0
+        && request.resource.data.currentStepIndex <= 1000
+        && request.resource.data.completedStepIds is list
+        && request.resource.data.completedStepIds.size() <= 500
+        && request.resource.data.completed is bool
+        && request.resource.data.updatedAt is timestamp
+        && (!('completedAt' in request.resource.data) || request.resource.data.completedAt is timestamp);
+    }
+
     match /users/{userId} {
       allow read: if isOwner(userId);
       allow create: if isOwner(userId) && isValidProfile();
@@ -47,9 +64,11 @@ service cloud.firestore {
         && request.resource.data.createdAt == resource.data.createdAt;
       allow delete: if false;
 
-      // Per-user progress documents (owner-only).
+      // Per-user progress documents (owner-only, schema-validated).
       match /progress/{lessonId} {
-        allow read, write: if isOwner(userId);
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidProgress();
+        allow delete: if false;
       }
 
       // Per-user stats documents (owner-only).
