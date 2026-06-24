@@ -13,6 +13,14 @@ import { nextLesson } from '@/content/course'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { loadLessonProgress, saveLessonProgress } from '@/lib/progress/progress'
 import { recordActivity } from '@/lib/progress/streak'
+import { ReferenceTable } from '@/components/ReferenceTable'
+import {
+  cancelSpeech,
+  isSpeechEnabled,
+  isSpeechSupported,
+  setSpeechEnabled,
+  speak,
+} from '@/lib/speech'
 import { Mascot, type MascotMood } from './Mascot'
 import { BuildIntervalView } from './BuildIntervalView'
 import { IdentifyIntervalView } from './IdentifyIntervalView'
@@ -37,9 +45,25 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     mood: 'neutral',
   })
 
+  const [speechOn, setSpeechOn] = useState(isSpeechEnabled())
+
   const step = lesson.steps[stepIndex]
   const total = lesson.steps.length
   const follow = useMemo(() => nextLesson(lesson.id), [lesson.id])
+
+  // The tutor speaks whatever it says in its bubble.
+  useEffect(() => {
+    speak(mascot.message)
+  }, [mascot.message])
+
+  useEffect(() => () => cancelSpeech(), [])
+
+  const toggleSpeech = () => {
+    const next = !speechOn
+    setSpeechEnabled(next)
+    setSpeechOn(next)
+    if (next) speak(mascot.message)
+  }
 
   // Persist the learner's place in this lesson.
   const persist = (currentStepIndex: number, isCompleted: boolean) => {
@@ -176,9 +200,22 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           <Link to="/" className="hover:underline">
             &larr; Map
           </Link>
-          <span>
-            Step {stepIndex + 1} of {total}
-          </span>
+          <div className="flex items-center gap-3">
+            {isSpeechSupported() && (
+              <button
+                type="button"
+                onClick={toggleSpeech}
+                className="hover:underline"
+                aria-label={speechOn ? 'Mute tutor voice' : 'Unmute tutor voice'}
+              >
+                {speechOn ? '🔊 Voice' : '🔇 Voice'}
+              </button>
+            )}
+            <ReferenceTable />
+            <span>
+              Step {stepIndex + 1} of {total}
+            </span>
+          </div>
         </div>
         <Progress value={((stepIndex + (canAdvance ? 1 : 0)) / total) * 100} />
         <h1 className="pt-2 font-display text-2xl">{lesson.title}</h1>
