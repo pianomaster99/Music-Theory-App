@@ -1,11 +1,16 @@
 import type { Course, Lesson, Module } from '@/lib/content/types'
 import { intervalsModule } from './intervals'
+import { triadsModule } from './triads'
+import { seventhsModule } from './sevenths'
+import { materializeLesson } from './generate'
 
-// The single course. Modules are authored elsewhere and registered here.
+// The single course. Modules are authored elsewhere and registered here. Order
+// is the learning path: intervals build the thirds that triads stack, and
+// triads are the base that seventh chords extend.
 export const course: Course = {
   id: 'music-theory',
   subject: 'Music Theory',
-  modules: [intervalsModule],
+  modules: [intervalsModule, triadsModule, seventhsModule],
 }
 
 export interface LessonLocation {
@@ -21,7 +26,7 @@ export function allLessons(): LessonLocation[] {
   let index = 0
   for (const module of course.modules) {
     for (const lesson of module.lessons) {
-      result.push({ module, lesson, index })
+      result.push({ module, lesson: materializeLesson(lesson), index })
       index++
     }
   }

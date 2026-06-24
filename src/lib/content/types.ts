@@ -82,12 +82,50 @@ export function isProblemStep(step: Step): step is ProblemStep {
   return step.kind !== 'concept'
 }
 
+// Generators let a lesson produce randomized-but-deterministic problems instead
+// of (or in addition to) hand-authored ones, so each lesson can offer however
+// many questions onboarding asks for. They are materialized into concrete Steps.
+export interface BuildIntervalGen {
+  kind: 'buildInterval'
+  intervals: Interval[]
+  directions?: Direction[]
+  bases?: Pitch[]
+  count: number
+}
+export interface IdentifyIntervalGen {
+  kind: 'identifyInterval'
+  intervals: Interval[]
+  directions?: Direction[]
+  bases?: Pitch[]
+  numberOnly?: boolean
+  count: number
+}
+export interface BuildChordGen {
+  kind: 'buildChord'
+  qualities: ChordQuality[]
+  roots?: Pitch[]
+  count: number
+}
+export interface IdentifyChordGen {
+  kind: 'identifyChord'
+  qualities: ChordQuality[]
+  roots?: Pitch[]
+  count: number
+}
+export type GenSpec =
+  | BuildIntervalGen
+  | IdentifyIntervalGen
+  | BuildChordGen
+  | IdentifyChordGen
+
 export interface Lesson {
   id: string
   title: string
   /** One-line summary shown on the course path. */
   summary: string
   steps: Step[]
+  /** Optional generators, materialized into extra problem steps after `steps`. */
+  generate?: GenSpec[]
 }
 
 export interface Module {

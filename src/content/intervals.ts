@@ -1,139 +1,136 @@
 import type { Module } from '@/lib/content/types'
 import { pitch } from '@/lib/theory/pitch'
 
-// The Intervals module. Lessons are pure data: a sequence of concept and
-// interactive problem steps with hand-written hints and feedback.
+// The Intervals module, framed by how intervals *sound*: perfect, consonant,
+// and dissonant. Concepts are authored; the problems are generated so each
+// lesson can offer a variable number of fresh examples.
 
 export const intervalsModule: Module = {
   id: 'intervals',
   title: 'Intervals',
   description:
-    'An interval is the distance between two notes. Learn to count it, build it, and name it.',
+    'The distance between two notes. Learn to count, build, and name intervals by how they sound.',
   lessons: [
     {
-      id: 'intervals-1',
-      title: 'Counting the distance',
-      summary: 'What an interval is and how to count its number.',
+      id: 'intervals-perfect',
+      title: 'Perfect intervals',
+      summary: 'Unisons, fourths, fifths, and octaves — the open, stable sounds.',
       steps: [
         {
           kind: 'concept',
-          id: 'i1-c1',
+          id: 'ip-c1',
           title: 'What is an interval?',
-          body: 'An interval is simply the distance between two notes. Every chord, melody, and scale is built from intervals. Here are two notes a distance apart — C and the G above it.',
+          body: 'An interval is the distance between two notes. To find its number, count letter names from the lower note to the higher one — counting the lower note as 1. From C up to G: C(1) D(2) E(3) F(4) G(5). That is a fifth.',
           visualPitches: [pitch('C', 4), pitch('G', 4)],
         },
         {
           kind: 'concept',
-          id: 'i1-c2',
-          title: 'Counting the number',
-          body: 'To find the number of an interval, count letter names from the bottom note to the top — and count the bottom note as 1. From C up to G: C(1) D(2) E(3) F(4) G(5). That is a fifth.',
+          id: 'ip-c2',
+          title: 'The perfect family',
+          body: 'Unisons, fourths, fifths, and octaves are called "perfect." They sound open and satisfying — stable enough to end a piece on. A perfect fourth (C–F) is 5 half steps; a perfect fifth (C–G) is 7 half steps; an octave is the same letter, 12 half steps up.',
           visualPitches: [pitch('C', 4), pitch('G', 4)],
         },
+      ],
+      generate: [
         {
           kind: 'buildInterval',
-          id: 'i1-p1',
-          prompt: 'Drag the red note to build a 5th above C.',
-          basePitch: pitch('C', 4),
-          target: { number: 5, quality: 'P' },
-          direction: 'above',
-          hints: [
-            'Count letter names from C as 1: C(1) D(2) E(3) F(4) G(5).',
-            'The fifth letter above C is G. Place the note on G with no sharp or flat.',
+          intervals: [
+            { number: 4, quality: 'P' },
+            { number: 5, quality: 'P' },
+            { number: 8, quality: 'P' },
           ],
-        },
-        {
-          kind: 'buildInterval',
-          id: 'i1-p2',
-          prompt: 'Now build a 3rd above C.',
-          basePitch: pitch('C', 4),
-          target: { number: 3, quality: 'M' },
-          direction: 'above',
-          hints: [
-            'Count: C(1) D(2) E(3). The third letter above C is E.',
-            'Place the note on E, no accidental.',
-          ],
-        },
-        {
-          kind: 'buildInterval',
-          id: 'i1-p3',
-          prompt: 'Build an octave (8th) above C.',
-          basePitch: pitch('C', 4),
-          target: { number: 8, quality: 'P' },
-          direction: 'above',
-          hints: [
-            'An octave is the same letter, eight steps up: C to the next C.',
-            'Place the note on the C above the starting note.',
-          ],
+          count: 3,
         },
         {
           kind: 'identifyInterval',
-          id: 'i1-p4',
-          prompt: 'What number is this interval?',
-          pitches: [pitch('C', 4), pitch('A', 4)],
-          answer: { number: 6, quality: 'M' },
-          numberOnly: true,
-          hints: ['Count letter names: C(1) D(2) E(3) F(4) G(5) A(6).'],
+          intervals: [
+            { number: 4, quality: 'P' },
+            { number: 5, quality: 'P' },
+            { number: 8, quality: 'P' },
+          ],
+          count: 2,
         },
       ],
     },
     {
-      id: 'intervals-2',
-      title: 'Major and minor',
-      summary: 'The quality of an interval: how many half steps it spans.',
+      id: 'intervals-consonant',
+      title: 'Consonant intervals',
+      summary: 'Thirds and sixths — the smooth, sweet sounds.',
       steps: [
         {
           kind: 'concept',
-          id: 'i2-c1',
-          title: 'Two intervals can share a number',
-          body: 'The number alone is not enough. A third can be major (4 half steps, like C to E) or minor (3 half steps, like C to E-flat). The "quality" tells you the exact size.',
+          id: 'ic-c1',
+          title: 'Major and minor',
+          body: 'Thirds and sixths come in two sizes. A major third (C–E) is 4 half steps; a minor third (C–E♭) is 3. These intervals sound consonant — smooth and sweet, easy on the ears. They are the building blocks of chords.',
           visualPitches: [pitch('C', 4), pitch('E', 4)],
         },
         {
-          kind: 'buildInterval',
-          id: 'i2-p1',
-          prompt: 'Build a minor 3rd (m3) above C.',
-          basePitch: pitch('C', 4),
-          target: { number: 3, quality: 'm' },
-          direction: 'above',
-          hints: [
-            'Start with the third letter above C — that is E.',
-            'A minor third is one half step smaller than a major third. Lower the E with a flat to get E-flat.',
-          ],
-          feedback: {
-            wrongEnharmonicSpelling:
-              'That note sounds right, but a third above C must be spelled on E. D-sharp is the wrong spelling here — use E-flat.',
-          },
+          kind: 'concept',
+          id: 'ic-c2',
+          title: 'Spelling matters',
+          body: 'A third is always written on letters three apart (C–E), even when an accidental is involved. C–E♭ is a minor third; C–D♯ sounds the same but is the wrong spelling for a third, because D is only a second above C.',
+          visualPitches: [pitch('C', 4), pitch('E', 4, -1)],
         },
+      ],
+      generate: [
         {
           kind: 'buildInterval',
-          id: 'i2-p2',
-          prompt: 'Build a perfect 5th (P5) above D.',
-          basePitch: pitch('D', 4),
-          target: { number: 5, quality: 'P' },
-          direction: 'above',
-          hints: [
-            'Count five letters from D: D(1) E(2) F(3) G(4) A(5).',
-            'A perfect fifth above D is A, with no accidental.',
+          intervals: [
+            { number: 3, quality: 'M' },
+            { number: 3, quality: 'm' },
+            { number: 6, quality: 'M' },
+            { number: 6, quality: 'm' },
           ],
+          count: 3,
         },
         {
           kind: 'identifyInterval',
-          id: 'i2-p3',
-          prompt: 'Name this interval (number and quality).',
-          pitches: [pitch('C', 4), pitch('E', 4, -1)],
-          answer: { number: 3, quality: 'm' },
-          hints: [
-            'C to E is a third. Now count half steps: C to E-flat is 3 half steps.',
-            '3 half steps over a third is a minor third.',
+          intervals: [
+            { number: 3, quality: 'M' },
+            { number: 3, quality: 'm' },
+            { number: 6, quality: 'M' },
+            { number: 6, quality: 'm' },
           ],
+          count: 3,
+        },
+      ],
+    },
+    {
+      id: 'intervals-dissonant',
+      title: 'Dissonant intervals',
+      summary: 'Seconds, sevenths, and the tritone — the tense, clashing sounds.',
+      steps: [
+        {
+          kind: 'concept',
+          id: 'id-c1',
+          title: 'Tension and release',
+          body: 'Seconds and sevenths sound dissonant — tense and clashing, almost an OUCH. So does the tritone (an augmented fourth or diminished fifth, like C–F♯). Dissonance is not "bad": it creates the tension that consonance resolves.',
+          visualPitches: [pitch('C', 4), pitch('B', 4)],
+        },
+      ],
+      generate: [
+        {
+          kind: 'buildInterval',
+          intervals: [
+            { number: 2, quality: 'M' },
+            { number: 2, quality: 'm' },
+            { number: 7, quality: 'M' },
+            { number: 7, quality: 'm' },
+            { number: 4, quality: 'A' },
+            { number: 5, quality: 'd' },
+          ],
+          count: 3,
         },
         {
           kind: 'identifyInterval',
-          id: 'i2-p4',
-          prompt: 'Name this interval (number and quality).',
-          pitches: [pitch('C', 4), pitch('E', 4)],
-          answer: { number: 3, quality: 'M' },
-          hints: ['C to E natural is 4 half steps over a third — a major third.'],
+          intervals: [
+            { number: 2, quality: 'M' },
+            { number: 2, quality: 'm' },
+            { number: 7, quality: 'M' },
+            { number: 7, quality: 'm' },
+            { number: 5, quality: 'd' },
+          ],
+          count: 3,
         },
       ],
     },

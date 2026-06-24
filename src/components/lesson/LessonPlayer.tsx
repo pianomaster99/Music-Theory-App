@@ -16,6 +16,8 @@ import { recordActivity } from '@/lib/progress/streak'
 import { Mascot, type MascotMood } from './Mascot'
 import { BuildIntervalView } from './BuildIntervalView'
 import { IdentifyIntervalView } from './IdentifyIntervalView'
+import { BuildChordView } from './BuildChordView'
+import { IdentifyChordView } from './IdentifyChordView'
 
 function defaultMascotMessage(step: Step): string {
   if (step.kind === 'concept') return 'Read this, then press Continue.'
@@ -256,10 +258,11 @@ function StepBody({
       {step.kind === 'identifyInterval' && (
         <IdentifyIntervalView step={step} solved={solved} onResult={onResult} />
       )}
-      {(step.kind === 'buildChord' || step.kind === 'identifyChord') && (
-        <p className="text-center text-sm text-ink-soft">
-          This problem type is coming soon.
-        </p>
+      {step.kind === 'buildChord' && (
+        <BuildChordView step={step} solved={solved} onResult={onResult} />
+      )}
+      {step.kind === 'identifyChord' && (
+        <IdentifyChordView step={step} solved={solved} onResult={onResult} />
       )}
     </div>
   )
