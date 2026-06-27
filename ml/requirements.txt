@@ -1,0 +1,22 @@
+# Core numerics / audio IO
+numpy>=1.26
+scipy>=1.11
+soundfile>=0.12
+matplotlib>=3.8
+
+# Augmentation (Method 2 & 3): noise, reverb, gain/EQ, codec, etc.
+audiomentations>=0.35
+fast_mp3_augment>=0.2  # enables Mp3Compression codec augmentation
+
+# Real labeled datasets (Method 2): standardized MIR dataset loaders
+mirdata>=0.3.9
+
+# Teacher model for distillation (Method 3). torch is CPU-only here.
+# Install torch separately if the default wheel is too large:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.2
+torchcrepe>=0.0.23
+
+# Optional realism layer for Method 1 (WORLD resynthesis). Safe to skip if it
+# fails to build; synth.py falls back to pure-procedural synthesis.
+# pyworld>=0.3.4

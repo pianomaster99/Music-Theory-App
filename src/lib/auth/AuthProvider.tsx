@@ -11,6 +11,7 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
+  signInAnonymously,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -32,6 +33,12 @@ interface AuthContextValue {
   signInWithGoogle: () => Promise<void>
   signOutUser: () => Promise<void>
   reloadProfile: () => Promise<void>
+  /**
+   * Ensure there is a signed-in user for guest flows (e.g. the multiplayer
+   * game). Reuses the current account if present, otherwise signs in
+   * anonymously. Returns the resolved User and sets the display name when given.
+   */
+  ensureGuest: (name?: string) => Promise<User>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -107,6 +114,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       async reloadProfile() {
         await fetchProfile(auth.currentUser)
+      },
+      async ensureGuest(name?: string) {
+        let u = auth.currentUser
+        if (!u) {
+          const cred = await signInAnonymously(auth)
+          u = cred.user
+        }
+        const trimmed = name?.trim()
+        if (trimmed && trimmed !== u.displayName) {
+          await updateProfile(u, { displayName: trimmed })
+        }
+        return u
       },
     }),
     [user, loading, profile, profileLoading, fetchProfile],

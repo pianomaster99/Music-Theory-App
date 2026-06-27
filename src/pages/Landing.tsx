@@ -46,6 +46,9 @@ export default function Landing() {
       <header className="mx-auto flex max-w-5xl items-center justify-between px-4 py-5">
         <span className="font-display text-2xl text-ink">🎹 Pianomaster99</span>
         <div className="flex items-center gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link to="/play">🚀 Multiplayer</Link>
+          </Button>
           {user ? (
             <Button asChild size="sm">
               <Link to="/map">My map</Link>
@@ -79,11 +82,11 @@ export default function Landing() {
               <Link to={primaryTo}>{primaryLabel}</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/auth">I have an account</Link>
+              <Link to="/play">🚀 Play the multiplayer game</Link>
             </Button>
           </div>
           <p className="mt-3 text-sm text-ink-soft">
-            No prior theory needed — just the ability to read a little sheet music.
+            No prior theory needed — sing into your mic and race friends, or learn at your own pace.
           </p>
         </div>
         <div className="flex justify-center">
@@ -100,6 +103,39 @@ export default function Landing() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Multiplayer game spotlight */}
+      <section className="mx-auto max-w-5xl px-4 py-12">
+        <div className="rounded-3xl border-2 border-ink/30 bg-gradient-to-b from-[#0b1026] to-[#1a2348] p-8 text-center text-white shadow-[0_6px_0_rgba(74,53,38,0.25)] sm:p-12">
+          <p className="text-sm font-bold uppercase tracking-widest text-sky-200">
+            New · Multiplayer
+          </p>
+          <h2 className="mt-2 font-display text-4xl text-white sm:text-5xl">
+            🚀 Pitch Rocket Race
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-lg text-sky-100/90">
+            Sing the answer to each question and your rocket blasts forward. Nail
+            intervals and chords with your voice — an on-device AI listens to your
+            pitch in real time. First to the finish line wins.
+          </p>
+          <div className="mx-auto mt-6 grid max-w-3xl gap-4 sm:grid-cols-3">
+            {[
+              { icon: '🎤', title: 'Sing to answer', body: 'A browser AI detects the notes you sing — no keyboard needed.' },
+              { icon: '🏁', title: 'Race live', body: 'Quick-match with random players, make a private room, or go solo.' },
+              { icon: '🧠', title: 'Three modes', body: 'Noobs (intervals), Pros (chords), and Hackers (famous-music trivia).' },
+            ].map((f) => (
+              <div key={f.title} className="rounded-2xl bg-white/10 p-4 text-left">
+                <div className="text-3xl">{f.icon}</div>
+                <h3 className="mt-2 font-display text-xl text-white">{f.title}</h3>
+                <p className="mt-1 text-sm text-sky-100/80">{f.body}</p>
+              </div>
+            ))}
+          </div>
+          <Button asChild size="lg" className="mt-8">
+            <Link to="/play">Start a race</Link>
+          </Button>
         </div>
       </section>
 

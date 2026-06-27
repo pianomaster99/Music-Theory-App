@@ -115,6 +115,15 @@ export function playPitch(pitch: Pitch, duration: Tone.Unit.Time = '8n'): void {
   activeVoice()?.triggerAttackRelease(freqOf(pitch), duration)
 }
 
+/**
+ * Play concert A (A4 = 440 Hz) for ~half a second as a tuning reference.
+ * Must be called from a user gesture (it starts the audio context).
+ */
+export async function playReferenceA(durationSec = 0.5): Promise<void> {
+  await ensureAudio()
+  activeVoice()?.triggerAttackRelease(440, durationSec)
+}
+
 /** Begin sustaining a pitch (held until stopNote). Starts audio if needed. */
 export async function startNote(pitch: Pitch): Promise<void> {
   await ensureAudio()

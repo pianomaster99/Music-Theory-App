@@ -1,0 +1,3527 @@
+{
+ "noobs": [
+  {
+   "kind": "interval",
+   "prompt": "Sing a major second used in \"Happy Birthday\", starting on F#",
+   "answerPitches": [
+    "F#",
+    "G#"
+   ],
+   "reference": "Happy Birthday",
+   "category": "interval",
+   "id": "n000"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor second that begins the theme of 'Jaws', starting on F.",
+   "answerPitches": [
+    "F",
+    "F#"
+   ],
+   "reference": "Jaws",
+   "category": "interval",
+   "id": "n001"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third from F, similar to the start of 'Greensleeves'.",
+   "answerPitches": [
+    "F",
+    "Ab"
+   ],
+   "reference": "Greensleeves",
+   "category": "interval",
+   "id": "n002"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth from C, as heard in 'NBC Chime'.",
+   "answerPitches": [
+    "C",
+    "A"
+   ],
+   "reference": "NBC Chime",
+   "category": "interval",
+   "id": "n003"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth that opens 'My Way', starting on G.",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "My Way",
+   "category": "interval",
+   "id": "n004"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the ascending minor sixth from 'Love Story', starting on Bb.",
+   "answerPitches": [
+    "Bb",
+    "G"
+   ],
+   "reference": "Love Story",
+   "category": "interval",
+   "id": "n005"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh going up from A.",
+   "answerPitches": [
+    "A",
+    "G"
+   ],
+   "reference": "Somewhere (West Side Story)",
+   "category": "interval",
+   "id": "n006"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth that opens 'Born Free', starting on G.",
+   "answerPitches": [
+    "G",
+    "C"
+   ],
+   "reference": "Born Free",
+   "category": "interval",
+   "id": "n007"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth from A, as heard in 'Auld Lang Syne'.",
+   "answerPitches": [
+    "A",
+    "D"
+   ],
+   "reference": "Auld Lang Syne",
+   "category": "interval",
+   "id": "n008"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor third starting on A#.",
+   "answerPitches": [
+    "A#",
+    "C#"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n009"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major third starting on G, going up.",
+   "answerPitches": [
+    "G",
+    "B"
+   ],
+   "reference": "Oh When the Saints",
+   "category": "interval",
+   "id": "n010"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second from E, reminiscent of 'Happy Birthday'.",
+   "answerPitches": [
+    "E",
+    "F#"
+   ],
+   "reference": "Happy Birthday",
+   "category": "interval",
+   "id": "n011"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth that starts 'Here Comes the Sun', starting on A",
+   "answerPitches": [
+    "A",
+    "D"
+   ],
+   "reference": "Here Comes the Sun",
+   "category": "interval",
+   "id": "n012"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor sixth in 'The Entertainer', starting on D.",
+   "answerPitches": [
+    "D",
+    "Bb"
+   ],
+   "reference": "The Entertainer",
+   "category": "interval",
+   "id": "n013"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a perfect octave starting on A.",
+   "answerPitches": [
+    "A",
+    "E"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n014"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major third in 'When the Saints Go Marching In', starting on F.",
+   "answerPitches": [
+    "F",
+    "A"
+   ],
+   "reference": "When the Saints Go Marching In",
+   "category": "interval",
+   "id": "n015"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth that starts the NBC chime, beginning on G",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "NBC Chime",
+   "category": "interval",
+   "id": "n016"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third from 'Greensleeves', starting on C.",
+   "answerPitches": [
+    "C",
+    "Eb"
+   ],
+   "reference": "Greensleeves",
+   "category": "interval",
+   "id": "n017"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor third, starting on D",
+   "answerPitches": [
+    "D",
+    "F"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n018"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor second ascending from E.",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n019"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third that opens 'Smoke on the Water', starting on E.",
+   "answerPitches": [
+    "E",
+    "G"
+   ],
+   "reference": "Smoke on the Water",
+   "category": "interval",
+   "id": "n020"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor second from B, like 'Jaws'.",
+   "answerPitches": [
+    "B",
+    "C"
+   ],
+   "reference": "Jaws",
+   "category": "interval",
+   "id": "n021"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a perfect fifth starting on D, similar to \"Star Wars\".",
+   "answerPitches": [
+    "D",
+    "A"
+   ],
+   "reference": "Star Wars",
+   "category": "interval",
+   "id": "n022"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fifth from Bb, like in 'Twinkle, Twinkle'.",
+   "answerPitches": [
+    "Bb",
+    "F"
+   ],
+   "reference": "Twinkle, Twinkle, Little Star",
+   "category": "interval",
+   "id": "n023"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a major second descending from D.",
+   "answerPitches": [
+    "C",
+    "D"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n024"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major third from the start of a doorbell sound, starting on G#.",
+   "answerPitches": [
+    "G#",
+    "B#"
+   ],
+   "reference": "Doorbell Sound",
+   "category": "interval",
+   "id": "n025"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor sixth that opens \"Love Story\" theme, starting on E",
+   "answerPitches": [
+    "E",
+    "C"
+   ],
+   "reference": "Love Story",
+   "category": "interval",
+   "id": "n026"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fifth starting on C, going up.",
+   "answerPitches": [
+    "C",
+    "G"
+   ],
+   "reference": "Star Wars",
+   "category": "interval",
+   "id": "n027"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth that opens 'Here Comes the Bride', starting on C.",
+   "answerPitches": [
+    "C",
+    "F"
+   ],
+   "reference": "Here Comes the Bride",
+   "category": "interval",
+   "id": "n028"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor seventh, starting on A",
+   "answerPitches": [
+    "A",
+    "G"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n029"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third from 'Greensleeves', starting on D",
+   "answerPitches": [
+    "D",
+    "F"
+   ],
+   "reference": "Greensleeves",
+   "category": "interval",
+   "id": "n030"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor second from \"Jaws\", starting on E",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "Jaws Theme",
+   "category": "interval",
+   "id": "n031"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth in 'Amazing Grace', starting on C",
+   "answerPitches": [
+    "C",
+    "F"
+   ],
+   "reference": "Amazing Grace",
+   "category": "interval",
+   "id": "n032"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third that starts 'Hey Jude', starting on C.",
+   "answerPitches": [
+    "C",
+    "Eb"
+   ],
+   "reference": "Hey Jude",
+   "category": "interval",
+   "id": "n033"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the ascending major third that is used in 'Blackbird', starting on G.",
+   "answerPitches": [
+    "G",
+    "B"
+   ],
+   "reference": "Blackbird",
+   "category": "interval",
+   "id": "n034"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a major sixth descending from F.",
+   "answerPitches": [
+    "D",
+    "F"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n035"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major seventh down from Bb.",
+   "answerPitches": [
+    "Bb",
+    "C#"
+   ],
+   "reference": "Take On Me",
+   "category": "interval",
+   "id": "n036"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth down from F.",
+   "answerPitches": [
+    "F",
+    "A"
+   ],
+   "reference": "Nobody Knows the Trouble I've Seen",
+   "category": "interval",
+   "id": "n037"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second from 'Do-Re-Mi', starting on C",
+   "answerPitches": [
+    "C",
+    "D"
+   ],
+   "reference": "Do-Re-Mi",
+   "category": "interval",
+   "id": "n038"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor second starting on D.",
+   "answerPitches": [
+    "D",
+    "Eb"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n039"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the ascending perfect fifth that starts 'Twinkle, Twinkle, Little Star', starting on C.",
+   "answerPitches": [
+    "C",
+    "G"
+   ],
+   "reference": "Twinkle, Twinkle, Little Star",
+   "category": "interval",
+   "id": "n040"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the descending minor third from 'Hey Jude', starting on F.",
+   "answerPitches": [
+    "F",
+    "D"
+   ],
+   "reference": "Hey Jude",
+   "category": "interval",
+   "id": "n041"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major seventh beginning on F#",
+   "answerPitches": [
+    "F#",
+    "E#"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n042"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor sixth interval starting on A, like in \"The Entertainer\".",
+   "answerPitches": [
+    "A",
+    "F"
+   ],
+   "reference": "The Entertainer",
+   "category": "interval",
+   "id": "n043"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second from 'Chopsticks', starting on C.",
+   "answerPitches": [
+    "C",
+    "D"
+   ],
+   "reference": "Chopsticks",
+   "category": "interval",
+   "id": "n044"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second starting on E, going down.",
+   "answerPitches": [
+    "E",
+    "D"
+   ],
+   "reference": "Frere Jacques",
+   "category": "interval",
+   "id": "n045"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a perfect fourth used in \"Hark! The Herald Angels Sing\", starting on B",
+   "answerPitches": [
+    "B",
+    "E"
+   ],
+   "reference": "Hark! The Herald Angels Sing",
+   "category": "interval",
+   "id": "n046"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a diminished fifth starting on C.",
+   "answerPitches": [
+    "C",
+    "Gb"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n047"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor sixth from C, as used in 'Love Story'.",
+   "answerPitches": [
+    "C",
+    "Ab"
+   ],
+   "reference": "Love Story",
+   "category": "interval",
+   "id": "n048"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the augmented fourth from Peter Gabriel's 'Sledgehammer', starting on F.",
+   "answerPitches": [
+    "F",
+    "B"
+   ],
+   "reference": "Sledgehammer",
+   "category": "interval",
+   "id": "n049"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second opening \"Happy Birthday\", starting from C.",
+   "answerPitches": [
+    "C",
+    "D"
+   ],
+   "reference": "Happy Birthday",
+   "category": "interval",
+   "id": "n050"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth down from D.",
+   "answerPitches": [
+    "D",
+    "A"
+   ],
+   "reference": "I've Been Working on the Railroad",
+   "category": "interval",
+   "id": "n051"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth from the 'Bridal Chorus', starting on A.",
+   "answerPitches": [
+    "A",
+    "D"
+   ],
+   "reference": "Bridal Chorus",
+   "category": "interval",
+   "id": "n052"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor second going up from C.",
+   "answerPitches": [
+    "C",
+    "Db"
+   ],
+   "reference": "Jaws theme",
+   "category": "interval",
+   "id": "n053"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the augmented fourth of 'Maria', starting on C",
+   "answerPitches": [
+    "C",
+    "F#"
+   ],
+   "reference": "Maria",
+   "category": "interval",
+   "id": "n054"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fifth from E",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n055"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh from 'Somewhere', starting on A.",
+   "answerPitches": [
+    "A",
+    "G"
+   ],
+   "reference": "Somewhere",
+   "category": "interval",
+   "id": "n056"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor sixth starting on Eb, going up.",
+   "answerPitches": [
+    "Eb",
+    "C"
+   ],
+   "reference": "The Entertainer",
+   "category": "interval",
+   "id": "n057"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh from 'Somewhere', starting on C",
+   "answerPitches": [
+    "C",
+    "Bb"
+   ],
+   "reference": "Somewhere",
+   "category": "interval",
+   "id": "n058"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the descending perfect fifth that is heard in 'Flintstones', starting on Bb.",
+   "answerPitches": [
+    "Bb",
+    "Eb"
+   ],
+   "reference": "The Flintstones",
+   "category": "interval",
+   "id": "n059"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fifth that starts 'Twinkle Twinkle Little Star', starting on C.",
+   "answerPitches": [
+    "C",
+    "G"
+   ],
+   "reference": "Twinkle Twinkle Little Star",
+   "category": "interval",
+   "id": "n060"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth opening \"My Bonnie Lies Over the Ocean\", starting from C.",
+   "answerPitches": [
+    "C",
+    "A"
+   ],
+   "reference": "My Bonnie Lies Over the Ocean",
+   "category": "interval",
+   "id": "n061"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh starting on B",
+   "answerPitches": [
+    "B",
+    "A"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n062"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor seventh ascending from Bb.",
+   "answerPitches": [
+    "Bb",
+    "Ab"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n063"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second that starts on C#",
+   "answerPitches": [
+    "C#",
+    "D#"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n064"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second that opens 'Happy Birthday', starting on F.",
+   "answerPitches": [
+    "F",
+    "G"
+   ],
+   "reference": "Happy Birthday",
+   "category": "interval",
+   "id": "n065"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major seventh from G, reminiscent of 'Over the Rainbow'.",
+   "answerPitches": [
+    "G",
+    "F#"
+   ],
+   "reference": "Over the Rainbow",
+   "category": "interval",
+   "id": "n066"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third down from B.",
+   "answerPitches": [
+    "B",
+    "G"
+   ],
+   "reference": "Hey Jude",
+   "category": "interval",
+   "id": "n067"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major third from D, similar to 'When the Saints'.",
+   "answerPitches": [
+    "D",
+    "F#"
+   ],
+   "reference": "When the Saints Go Marching In",
+   "category": "interval",
+   "id": "n068"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the tritone going up from F#.",
+   "answerPitches": [
+    "F#",
+    "C"
+   ],
+   "reference": "Maria (West Side Story)",
+   "category": "interval",
+   "id": "n069"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a major seventh, starting on C",
+   "answerPitches": [
+    "C",
+    "B"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n070"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth that begins 'Here Comes the Sun', starting on G.",
+   "answerPitches": [
+    "G",
+    "C"
+   ],
+   "reference": "Here Comes the Sun",
+   "category": "interval",
+   "id": "n071"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a major third starting on B.",
+   "answerPitches": [
+    "B",
+    "D#"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n072"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major third descending from C",
+   "answerPitches": [
+    "C",
+    "A"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n073"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a major third, starting on F",
+   "answerPitches": [
+    "F",
+    "A"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n074"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth found in 'My Way', starting on F",
+   "answerPitches": [
+    "F",
+    "D"
+   ],
+   "reference": "My Way",
+   "category": "interval",
+   "id": "n075"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a major sixth used in \"My Bonnie Lies Over the Ocean\", starting on G",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "My Bonnie Lies Over the Ocean",
+   "category": "interval",
+   "id": "n076"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth from 'Why Can't We Be Friends', starting on A.",
+   "answerPitches": [
+    "A",
+    "D"
+   ],
+   "reference": "Why Can't We Be Friends",
+   "category": "interval",
+   "id": "n077"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor third downwards from B.",
+   "answerPitches": [
+    "B",
+    "G#"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n078"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh used in 'Over the Rainbow', starting on G",
+   "answerPitches": [
+    "G",
+    "F"
+   ],
+   "reference": "Over the Rainbow",
+   "category": "interval",
+   "id": "n079"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third that begins on E",
+   "answerPitches": [
+    "E",
+    "G"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n080"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a perfect fourth starting on E, like \"Here Comes the Bride\".",
+   "answerPitches": [
+    "E",
+    "A"
+   ],
+   "reference": "Here Comes the Bride",
+   "category": "interval",
+   "id": "n081"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing an augmented fourth known as the tritone, starting on C#",
+   "answerPitches": [
+    "C#",
+    "G"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n082"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh from 'Somewhere', starting on G.",
+   "answerPitches": [
+    "G",
+    "F"
+   ],
+   "reference": "West Side Story",
+   "category": "interval",
+   "id": "n083"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major seventh that begins the chorus of 'Take On Me', starting on C.",
+   "answerPitches": [
+    "C",
+    "B"
+   ],
+   "reference": "Take On Me",
+   "category": "interval",
+   "id": "n084"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor sixth starting on F",
+   "answerPitches": [
+    "F",
+    "Db"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n085"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor second starting on Bb",
+   "answerPitches": [
+    "Bb",
+    "B"
+   ],
+   "reference": "Jaws Alternative",
+   "category": "interval",
+   "id": "n086"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major seventh in 'Bali Hai', starting on E.",
+   "answerPitches": [
+    "E",
+    "D#"
+   ],
+   "reference": "Bali Hai",
+   "category": "interval",
+   "id": "n087"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the Tritone in 'Maria', starting on F",
+   "answerPitches": [
+    "F",
+    "B"
+   ],
+   "reference": "Maria",
+   "category": "interval",
+   "id": "n088"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh starting on E.",
+   "answerPitches": [
+    "E",
+    "D"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n089"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a perfect fifth used in \"Twinkle Twinkle Little Star\", starting on D",
+   "answerPitches": [
+    "D",
+    "A"
+   ],
+   "reference": "Twinkle Twinkle Little Star",
+   "category": "interval",
+   "id": "n090"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a minor sixth starting on G.",
+   "answerPitches": [
+    "G",
+    "Eb"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n091"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth that starts on D",
+   "answerPitches": [
+    "D",
+    "G"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n092"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a major third from F# upwards.",
+   "answerPitches": [
+    "F#",
+    "A#"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n093"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fifth found in 'Hedwig's Theme', starting on E",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "Hedwig's Theme",
+   "category": "interval",
+   "id": "n094"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth that opens 'My Bonnie Lies Over the Ocean', starting on D.",
+   "answerPitches": [
+    "D",
+    "B"
+   ],
+   "reference": "My Bonnie Lies Over the Ocean",
+   "category": "interval",
+   "id": "n095"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect unison down from G (just kidding, try major third).",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "When the Saints Go Marching In",
+   "category": "interval",
+   "id": "n096"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing an augmented fourth (tritone) starting on E.",
+   "answerPitches": [
+    "E",
+    "A#"
+   ],
+   "reference": "Custom",
+   "category": "interval",
+   "id": "n097"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the tritone famously in 'The Simpsons' theme, starting on B.",
+   "answerPitches": [
+    "B",
+    "F"
+   ],
+   "reference": "The Simpsons",
+   "category": "interval",
+   "id": "n098"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing a diminished fifth for a spooky sound, starting on B",
+   "answerPitches": [
+    "B",
+    "F"
+   ],
+   "reference": "Interval Theory",
+   "category": "interval",
+   "id": "n099"
+  }
+ ],
+ "pros": [
+  {
+   "kind": "chord",
+   "prompt": "Sing the A major triad starting on A.",
+   "answerPitches": [
+    "A",
+    "C#",
+    "E"
+   ],
+   "reference": "A major scale",
+   "category": "chord",
+   "id": "p000"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major seventh starting on G.",
+   "answerPitches": [
+    "G",
+    "F#"
+   ],
+   "reference": "intense drive",
+   "category": "interval",
+   "id": "p001"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second from D.",
+   "answerPitches": [
+    "D",
+    "E"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p002"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the E# major triad starting on E#.",
+   "answerPitches": [
+    "E#",
+    "G##",
+    "B#"
+   ],
+   "reference": "E# major chord",
+   "category": "chord",
+   "id": "p003"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the A# major triad.",
+   "answerPitches": [
+    "A#",
+    "C##",
+    "E#"
+   ],
+   "reference": "general chord",
+   "category": "chord",
+   "id": "p004"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of an A major triad.",
+   "answerPitches": [
+    "A",
+    "C#",
+    "E"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p005"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F# minor chord.",
+   "answerPitches": [
+    "F#",
+    "A",
+    "C#"
+   ],
+   "reference": "general chord knowledge",
+   "category": "chord",
+   "id": "p006"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the D# minor triad.",
+   "answerPitches": [
+    "D#",
+    "F#",
+    "A#"
+   ],
+   "reference": "D# minor scale",
+   "category": "chord",
+   "id": "p007"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Db diminished chord.",
+   "answerPitches": [
+    "Db",
+    "E",
+    "G"
+   ],
+   "reference": "general chord knowledge",
+   "category": "chord",
+   "id": "p008"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor second from B.",
+   "answerPitches": [
+    "B",
+    "C"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p009"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F augmented triad.",
+   "answerPitches": [
+    "F",
+    "A",
+    "C#"
+   ],
+   "reference": "F augmented chord",
+   "category": "chord",
+   "id": "p010"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the E minor triad starting on E.",
+   "answerPitches": [
+    "E",
+    "G",
+    "B"
+   ],
+   "reference": "E minor scale",
+   "category": "chord",
+   "id": "p011"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing an Eb minor triad.",
+   "answerPitches": [
+    "Eb",
+    "Gb",
+    "Bb"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p012"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth that opens NBC chime, starting on G.",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "NBC chime",
+   "category": "interval",
+   "id": "p013"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the outer two notes of an Ab minor triad.",
+   "answerPitches": [
+    "Ab",
+    "Eb",
+    "C"
+   ],
+   "reference": "Ab minor chord",
+   "category": "chord",
+   "id": "p014"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a C major triad.",
+   "answerPitches": [
+    "C",
+    "E",
+    "G"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p015"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the A# diminished triad starting on A#.",
+   "answerPitches": [
+    "A#",
+    "C#",
+    "E"
+   ],
+   "reference": "A# diminished chord",
+   "category": "chord",
+   "id": "p016"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a B minor triad.",
+   "answerPitches": [
+    "B",
+    "D",
+    "F#"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p017"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a D# diminished triad.",
+   "answerPitches": [
+    "D#",
+    "F#",
+    "A"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p018"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the A minor triad.",
+   "answerPitches": [
+    "A",
+    "C",
+    "E"
+   ],
+   "reference": "A minor scale",
+   "category": "chord",
+   "id": "p019"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the B major chord.",
+   "answerPitches": [
+    "B",
+    "D#",
+    "F#"
+   ],
+   "reference": "general chord knowledge",
+   "category": "chord",
+   "id": "p020"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing a C minor triad.",
+   "answerPitches": [
+    "C",
+    "Eb",
+    "G"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p021"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F# major triad starting on F#.",
+   "answerPitches": [
+    "F#",
+    "A#",
+    "C#"
+   ],
+   "reference": "F# major scale",
+   "category": "chord",
+   "id": "p022"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing a D minor triad.",
+   "answerPitches": [
+    "D",
+    "F",
+    "A"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p023"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Bb augmented chord.",
+   "answerPitches": [
+    "Bb",
+    "D",
+    "F#"
+   ],
+   "reference": "general chord knowledge",
+   "category": "chord",
+   "id": "p024"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the C minor triad starting on C.",
+   "answerPitches": [
+    "C",
+    "Eb",
+    "G"
+   ],
+   "reference": "C minor scale",
+   "category": "chord",
+   "id": "p025"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the C# augmented triad.",
+   "answerPitches": [
+    "C#",
+    "E#",
+    "G#"
+   ],
+   "reference": "C# augmented chord",
+   "category": "chord",
+   "id": "p026"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing an F# augmented triad.",
+   "answerPitches": [
+    "F#",
+    "A#",
+    "D"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p027"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Ab augmented triad.",
+   "answerPitches": [
+    "Ab",
+    "C",
+    "E"
+   ],
+   "reference": "Ab augmented chord",
+   "category": "chord",
+   "id": "p028"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Ab major triad starting on Ab.",
+   "answerPitches": [
+    "Ab",
+    "C",
+    "Eb"
+   ],
+   "reference": "Ab major scale",
+   "category": "chord",
+   "id": "p029"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Bb minor triad.",
+   "answerPitches": [
+    "Bb",
+    "Db",
+    "F"
+   ],
+   "reference": "general chord",
+   "category": "chord",
+   "id": "p030"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the D augmented triad starting on D.",
+   "answerPitches": [
+    "D",
+    "F#",
+    "A#"
+   ],
+   "reference": "composition involving D augmented",
+   "category": "chord",
+   "id": "p031"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the B major triad starting on B.",
+   "answerPitches": [
+    "B",
+    "D#",
+    "F#"
+   ],
+   "reference": "B major scale",
+   "category": "chord",
+   "id": "p032"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of an A augmented triad.",
+   "answerPitches": [
+    "A",
+    "C#",
+    "E#"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p033"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the E major triad starting on E.",
+   "answerPitches": [
+    "E",
+    "G#",
+    "B"
+   ],
+   "reference": "E major scale",
+   "category": "chord",
+   "id": "p034"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major seventh from E.",
+   "answerPitches": [
+    "E",
+    "D#"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p035"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Bb minor triad starting on Bb.",
+   "answerPitches": [
+    "Bb",
+    "Db",
+    "F"
+   ],
+   "reference": "Bb minor scale",
+   "category": "chord",
+   "id": "p036"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing a G diminished triad.",
+   "answerPitches": [
+    "G",
+    "Bb",
+    "Db"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p037"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of an Eb minor triad.",
+   "answerPitches": [
+    "Eb",
+    "Gb",
+    "Bb"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p038"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the D augmented triad.",
+   "answerPitches": [
+    "D",
+    "F#",
+    "A#"
+   ],
+   "reference": "general chord",
+   "category": "chord",
+   "id": "p039"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third starting on F#.",
+   "answerPitches": [
+    "F#",
+    "A"
+   ],
+   "reference": "night music",
+   "category": "interval",
+   "id": "p040"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the A minor chord.",
+   "answerPitches": [
+    "A",
+    "C",
+    "E"
+   ],
+   "reference": "general chord knowledge",
+   "category": "chord",
+   "id": "p041"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of an E minor triad.",
+   "answerPitches": [
+    "E",
+    "G",
+    "B"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p042"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a D major triad.",
+   "answerPitches": [
+    "D",
+    "F#",
+    "A"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p043"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the E diminished triad.",
+   "answerPitches": [
+    "E",
+    "G",
+    "Bb"
+   ],
+   "reference": "E diminished chord",
+   "category": "chord",
+   "id": "p044"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a G minor triad.",
+   "answerPitches": [
+    "G",
+    "Bb",
+    "D"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p045"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the G augmented chord.",
+   "answerPitches": [
+    "G",
+    "B",
+    "D#"
+   ],
+   "reference": "general chord knowledge",
+   "category": "chord",
+   "id": "p046"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a G# minor triad.",
+   "answerPitches": [
+    "G#",
+    "B",
+    "D#"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p047"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the outer two notes of a G# diminished triad.",
+   "answerPitches": [
+    "G#",
+    "D",
+    "B"
+   ],
+   "reference": "G# diminished chord",
+   "category": "chord",
+   "id": "p048"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the C# minor triad starting on C#.",
+   "answerPitches": [
+    "C#",
+    "E",
+    "G#"
+   ],
+   "reference": "C# minor chord",
+   "category": "chord",
+   "id": "p049"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the diminished fifth from G.",
+   "answerPitches": [
+    "G",
+    "Db"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p050"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh from B.",
+   "answerPitches": [
+    "B",
+    "A"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p051"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the B diminished triad.",
+   "answerPitches": [
+    "B",
+    "D",
+    "F"
+   ],
+   "reference": "B diminished chord",
+   "category": "chord",
+   "id": "p052"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the G diminished triad.",
+   "answerPitches": [
+    "G",
+    "Bb",
+    "Db"
+   ],
+   "reference": "general chord",
+   "category": "chord",
+   "id": "p053"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F# minor triad starting on F#.",
+   "answerPitches": [
+    "F#",
+    "A",
+    "C#"
+   ],
+   "reference": "F# minor chord",
+   "category": "chord",
+   "id": "p054"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the D minor triad.",
+   "answerPitches": [
+    "D",
+    "F",
+    "A"
+   ],
+   "reference": "D minor scale",
+   "category": "chord",
+   "id": "p055"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth starting on Bb, like 'Amazing Grace'.",
+   "answerPitches": [
+    "Bb",
+    "Eb"
+   ],
+   "reference": "Amazing Grace",
+   "category": "interval",
+   "id": "p056"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing an Ab major triad.",
+   "answerPitches": [
+    "Ab",
+    "C",
+    "Eb"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p057"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor third from A.",
+   "answerPitches": [
+    "A",
+    "C"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p058"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a C augmented triad.",
+   "answerPitches": [
+    "C",
+    "E",
+    "G#"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p059"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of an E augmented triad.",
+   "answerPitches": [
+    "E",
+    "G#",
+    "C"
+   ],
+   "reference": "composition involving E augmented",
+   "category": "chord",
+   "id": "p060"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Bb augmented triad starting on Bb.",
+   "answerPitches": [
+    "Bb",
+    "D",
+    "F#"
+   ],
+   "reference": "Bb augmented chord",
+   "category": "chord",
+   "id": "p061"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing an F augmented triad.",
+   "answerPitches": [
+    "F",
+    "A",
+    "C#"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p062"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F# diminished triad.",
+   "answerPitches": [
+    "F#",
+    "A",
+    "C"
+   ],
+   "reference": "F# diminished chord",
+   "category": "chord",
+   "id": "p063"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F diminished triad starting on F.",
+   "answerPitches": [
+    "F",
+    "Ab",
+    "B"
+   ],
+   "reference": "F diminished chord",
+   "category": "chord",
+   "id": "p064"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a D diminished triad.",
+   "answerPitches": [
+    "D",
+    "F",
+    "Ab"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p065"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F minor triad starting on F.",
+   "answerPitches": [
+    "F",
+    "Ab",
+    "C"
+   ],
+   "reference": "F minor scale",
+   "category": "chord",
+   "id": "p066"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing a B minor triad.",
+   "answerPitches": [
+    "B",
+    "D",
+    "F#"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p067"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a F# minor triad.",
+   "answerPitches": [
+    "F#",
+    "A",
+    "C#"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p068"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the outer two notes of a C# augmented triad.",
+   "answerPitches": [
+    "C#",
+    "G",
+    "E"
+   ],
+   "reference": "C# augmented chord",
+   "category": "chord",
+   "id": "p069"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the B diminished triad starting on B.",
+   "answerPitches": [
+    "B",
+    "D",
+    "F"
+   ],
+   "reference": "composition involving B diminished",
+   "category": "chord",
+   "id": "p070"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a Db major triad.",
+   "answerPitches": [
+    "Db",
+    "F",
+    "Ab"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p071"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Eb diminished triad.",
+   "answerPitches": [
+    "Eb",
+    "Gb",
+    "A"
+   ],
+   "reference": "general chord",
+   "category": "chord",
+   "id": "p072"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the C minor chord.",
+   "answerPitches": [
+    "C",
+    "Eb",
+    "G"
+   ],
+   "reference": "general chord knowledge",
+   "category": "chord",
+   "id": "p073"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of an Eb major triad.",
+   "answerPitches": [
+    "Eb",
+    "G",
+    "Bb"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p074"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fourth from A, as heard in 'Here Comes the Bride'.",
+   "answerPitches": [
+    "A",
+    "D"
+   ],
+   "reference": "Here Comes the Bride",
+   "category": "interval",
+   "id": "p075"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing an E diminished triad.",
+   "answerPitches": [
+    "E",
+    "G",
+    "Bb"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p076"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the B augmented triad starting on B.",
+   "answerPitches": [
+    "B",
+    "D#",
+    "G"
+   ],
+   "reference": "B augmented chord",
+   "category": "chord",
+   "id": "p077"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the G major triad.",
+   "answerPitches": [
+    "G",
+    "B",
+    "D"
+   ],
+   "reference": "G major scale",
+   "category": "chord",
+   "id": "p078"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major third from E.",
+   "answerPitches": [
+    "E",
+    "G#"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p079"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor sixth from C.",
+   "answerPitches": [
+    "C",
+    "Ab"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p080"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fifth starting on A, like 'Twinkle Twinkle Little Star'.",
+   "answerPitches": [
+    "A",
+    "E"
+   ],
+   "reference": "Twinkle Twinkle Little Star",
+   "category": "interval",
+   "id": "p081"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major sixth from F.",
+   "answerPitches": [
+    "F",
+    "D"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p082"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major second starting on C#, ascending.",
+   "answerPitches": [
+    "C#",
+    "D#"
+   ],
+   "reference": "basic scale",
+   "category": "interval",
+   "id": "p083"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor seventh starting on D.",
+   "answerPitches": [
+    "D",
+    "C"
+   ],
+   "reference": "jazz standard",
+   "category": "interval",
+   "id": "p084"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a F minor triad.",
+   "answerPitches": [
+    "F",
+    "Ab",
+    "C"
+   ],
+   "reference": "common chords",
+   "category": "chord",
+   "id": "p085"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the C major triad.",
+   "answerPitches": [
+    "C",
+    "E",
+    "G"
+   ],
+   "reference": "C major scale",
+   "category": "chord",
+   "id": "p086"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing a C augmented triad.",
+   "answerPitches": [
+    "C",
+    "E",
+    "G#"
+   ],
+   "reference": "unique",
+   "category": "chord",
+   "id": "p087"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the D# major triad starting on D#.",
+   "answerPitches": [
+    "D#",
+    "G",
+    "A#"
+   ],
+   "reference": "D# major chord",
+   "category": "chord",
+   "id": "p088"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the F major triad.",
+   "answerPitches": [
+    "F",
+    "A",
+    "C"
+   ],
+   "reference": "general chord",
+   "category": "chord",
+   "id": "p089"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the minor sixth starting on E.",
+   "answerPitches": [
+    "E",
+    "C"
+   ],
+   "reference": "earthy tones",
+   "category": "interval",
+   "id": "p090"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the perfect fifth from G, as heard in 'Twinkle Twinkle Little Star'.",
+   "answerPitches": [
+    "G",
+    "D"
+   ],
+   "reference": "Twinkle Twinkle Little Star",
+   "category": "interval",
+   "id": "p091"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the C augmented triad.",
+   "answerPitches": [
+    "C",
+    "E",
+    "G#"
+   ],
+   "reference": "general chord",
+   "category": "chord",
+   "id": "p092"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a Bb major triad.",
+   "answerPitches": [
+    "Bb",
+    "D",
+    "F"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p093"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of a C diminished triad.",
+   "answerPitches": [
+    "C",
+    "Eb",
+    "Gb"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p094"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the G# major triad starting on G#.",
+   "answerPitches": [
+    "G#",
+    "C",
+    "D#"
+   ],
+   "reference": "G# major chord",
+   "category": "chord",
+   "id": "p095"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the Eb major triad.",
+   "answerPitches": [
+    "Eb",
+    "G",
+    "Bb"
+   ],
+   "reference": "Eb major scale",
+   "category": "chord",
+   "id": "p096"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the G augmented triad starting on G.",
+   "answerPitches": [
+    "G",
+    "B",
+    "D#"
+   ],
+   "reference": "composition involving G augmented",
+   "category": "chord",
+   "id": "p097"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the notes of an F# augmented triad.",
+   "answerPitches": [
+    "F#",
+    "A#",
+    "Dx"
+   ],
+   "reference": "general triad",
+   "category": "chord",
+   "id": "p098"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the major third from F.",
+   "answerPitches": [
+    "F",
+    "A"
+   ],
+   "reference": "general interval",
+   "category": "interval",
+   "id": "p099"
+  }
+ ],
+ "hackers": [
+  {
+   "kind": "interval",
+   "prompt": "Sing the first two notes of the opening motif of Smells Like Teen Spirit.",
+   "answerPitches": [
+    "F",
+    "B"
+   ],
+   "reference": "Nirvana Smells Like Teen Spirit opening power chords",
+   "category": "trivia",
+   "relative": true,
+   "id": "h000"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that restlessly begin Bruckner’s Ninth Symphony scherzo.",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "Bruckner Symphony No. 9 scherzo opening at tone‑splitting chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h001"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the tune of Debussy’s Prélude à l’après-midi d’un faune.",
+   "answerPitches": [
+    "B",
+    "F"
+   ],
+   "reference": "Debussy Prelude to the Afternoon of a Faun opening descending tritone",
+   "category": "trivia",
+   "relative": true,
+   "id": "h002"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin Richard Strauss’s Also Sprach Zarathustra fanfare.",
+   "answerPitches": [
+    "C",
+    "G"
+   ],
+   "reference": "Strauss Also Sprach Zarathustra opening fifth",
+   "category": "trivia",
+   "relative": true,
+   "id": "h003"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin Debussy’s Prélude à l’après‑midi d’un faune on flute.",
+   "answerPitches": [
+    "C#",
+    "G"
+   ],
+   "reference": "Debussy Prélude à l’apres‑midi d’un faune opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h004"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open 'Für Elise' by Beethoven.",
+   "answerPitches": [
+    "E",
+    "D#"
+   ],
+   "reference": "Für Elise",
+   "category": "trivia",
+   "relative": true,
+   "id": "h005"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the leap that introduces the Superman March.",
+   "answerPitches": [
+    "C",
+    "B"
+   ],
+   "reference": "Williams Superman Main Theme opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h006"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin Satie’s Gymnopédie No.1.",
+   "answerPitches": [
+    "D",
+    "F"
+   ],
+   "reference": "Satie Gymnopédie No.1 opening interval (minor third)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h007"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the iconic guitar chord in The Beatles’ “A Hard Day’s Night.”",
+   "answerPitches": [
+    "F",
+    "C",
+    "D"
+   ],
+   "reference": "A Hard Day’s Night opening chord analysis",
+   "category": "trivia",
+   "relative": true,
+   "id": "h008"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the opening leap from the Pink Panther theme.",
+   "answerPitches": [
+    "E",
+    "G"
+   ],
+   "reference": "The Pink Panther Theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h009"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of the Raiders of the Lost Ark fanfare.",
+   "answerPitches": [
+    "C",
+    "G",
+    "E"
+   ],
+   "reference": "John Williams Raiders Fanfare opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h010"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that start the famous ‘Duh‑duh’ shark motif (Jaws theme).",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "John Williams – Jaws shark motif opening two notes",
+   "category": "trivia",
+   "relative": true,
+   "id": "h011"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Beethoven’s Moonlight Sonata first movement.",
+   "answerPitches": [
+    "G#",
+    "C#"
+   ],
+   "reference": "Beethoven Piano Sonata No.14 “Moonlight” opening",
+   "category": "trivia",
+   "relative": true,
+   "id": "h012"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Mission: Impossible theme.",
+   "answerPitches": [
+    "E",
+    "G",
+    "C"
+   ],
+   "reference": "Mission Impossible theme opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h013"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the first chord that begins Beethoven’s Ninth Symphony—“Ode to Joy.”",
+   "answerPitches": [
+    "D",
+    "F#",
+    "A"
+   ],
+   "reference": "Beethoven Ninth Symphony “Ode to Joy” movement opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h014"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Beethoven’s Ode to Joy theme (Symphony No. 9).",
+   "answerPitches": [
+    "E",
+    "D"
+   ],
+   "reference": "Ludwig van Beethoven – opening interval of Ode to Joy (Symphony No. 9)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h015"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two opening notes of the Superman Fanfare motif.",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "Williams Superman Fanfare opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h016"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening deceptive‑motion chord in Joe Hisaishi’s Princess Mononoke opening.",
+   "answerPitches": [
+    "D♭",
+    "F",
+    "C"
+   ],
+   "reference": "Joe Hisaishi Princess Mononoke opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h017"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin the opening fanfare of Strauss’s Also sprach Zarathustra.",
+   "answerPitches": [
+    "C",
+    "G"
+   ],
+   "reference": "Richard Strauss Also sprach Zarathustra opening fanfare",
+   "category": "trivia",
+   "relative": true,
+   "id": "h018"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the leap that begins 'Maria' from 'West Side Story'.",
+   "answerPitches": [
+    "F#",
+    "C"
+   ],
+   "reference": "Maria",
+   "category": "trivia",
+   "relative": true,
+   "id": "h019"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Gershwin’s Rhapsody in Blue.",
+   "answerPitches": [
+    "E",
+    "Bb"
+   ],
+   "reference": "Gershwin Rhapsody in Blue opening glissando interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h020"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two-note opening motif of Holst’s Mars from The Planets.",
+   "answerPitches": [
+    "B",
+    "F"
+   ],
+   "reference": "Holst The Planets Mars opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h021"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin Bernstein’s \"Maria\" from West Side Story.",
+   "answerPitches": [
+    "C",
+    "F#"
+   ],
+   "reference": "Bernstein/Sondheim West Side Story 'Maria' opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h022"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Mahler’s “Abschied” from Das Lied von der Erde.",
+   "answerPitches": [
+    "C",
+    "E",
+    "A"
+   ],
+   "reference": "Mahler Abschied added‑sixth chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h023"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the opening leap in the Jaws theme (just the two shark‑theme notes).",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "John Williams Jaws two‑note motif (minor second)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h024"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of the American Rhapsody by John Serry Sr.",
+   "answerPitches": [
+    "B",
+    "F#",
+    "B♭"
+   ],
+   "reference": "American Rhapsody John Serry Sr. opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h025"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open The Good, the Bad and the Ugly theme.",
+   "answerPitches": [
+    "E",
+    "F#"
+   ],
+   "reference": "Ennio Morricone – main title of The Good, the Bad and the Ugly theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h026"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the chord that launches the Jedi adventure in Jaws’ absence (Hedwig’s first chord).",
+   "answerPitches": [
+    "E",
+    "B",
+    "G"
+   ],
+   "reference": "John Williams – opening chord in Hedwig’s Theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h027"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of 'The Imperial March' from Star Wars.",
+   "answerPitches": [
+    "G",
+    "B♭",
+    "D"
+   ],
+   "reference": "The Imperial March",
+   "category": "trivia",
+   "relative": true,
+   "id": "h028"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the theme to James Bond (original Eon series).",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "Monty Norman James Bond Theme in E minor",
+   "category": "trivia",
+   "relative": true,
+   "id": "h029"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the initial chord of Beethoven’s Piano Sonata No.29 (“Hammerklavier”) first movement.",
+   "answerPitches": [
+    "B",
+    "F#",
+    "D"
+   ],
+   "reference": "Beethoven Piano Sonata No.29 opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h030"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the famous “Tristan chord” at the start of Wagner’s Tristan und Isolde prelude.",
+   "answerPitches": [
+    "F",
+    "B",
+    "D#"
+   ],
+   "reference": "Wagner Tristan und Isolde opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h031"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that start Beethoven’s Moonlight Sonata motif rising in the left hand.",
+   "answerPitches": [
+    "C#",
+    "E"
+   ],
+   "reference": "Beethoven Moonlight Sonata first movement rising motif",
+   "category": "trivia",
+   "relative": true,
+   "id": "h032"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the first chord you hear in Beethoven’s Piano Sonata No.18.",
+   "answerPitches": [
+    "A",
+    "D",
+    "G"
+   ],
+   "reference": "Beethoven Piano Sonata No.18 opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h033"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the first two notes of the Pirates of the Caribbean theme.",
+   "answerPitches": [
+    "D",
+    "A"
+   ],
+   "reference": "Pirates of the Caribbean main motif in D minor",
+   "category": "trivia",
+   "relative": true,
+   "id": "h034"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the Rite of Spring \"Mars\" motif.",
+   "answerPitches": [
+    "D",
+    "G"
+   ],
+   "reference": "Holst The Planets – opening tritone of Mars motif",
+   "category": "trivia",
+   "relative": true,
+   "id": "h035"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of 'A Hard Day's Night' by The Beatles.",
+   "answerPitches": [
+    "G",
+    "C",
+    "F"
+   ],
+   "reference": "A Hard Day's Night",
+   "category": "trivia",
+   "relative": true,
+   "id": "h036"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of 'Bohemian Rhapsody' by Queen.",
+   "answerPitches": [
+    "B♭",
+    "D",
+    "F"
+   ],
+   "reference": "Bohemian Rhapsody",
+   "category": "trivia",
+   "relative": true,
+   "id": "h037"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Harry Potter’s Hedwig’s Theme.",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "John Williams – opening notes of Hedwig’s Theme (Harry Potter series)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h038"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Bernstein’s motif in West Side Story’s \"Maria\".",
+   "answerPitches": [
+    "C",
+    "F#"
+   ],
+   "reference": "West Side Story Maria motif (tritone)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h039"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the opening leap in Greensleeves melody (the first two notes).",
+   "answerPitches": [
+    "G",
+    "Bb"
+   ],
+   "reference": "Greensleeves opening interval (minor third)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h040"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of 'Rhapsody in Blue' by Gershwin.",
+   "answerPitches": [
+    "B♭",
+    "D",
+    "F"
+   ],
+   "reference": "Rhapsody in Blue",
+   "category": "trivia",
+   "relative": true,
+   "id": "h041"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two‑note motif that opens Orff’s ‘O Fortuna’ (Carmina Burana).",
+   "answerPitches": [
+    "F",
+    "B"
+   ],
+   "reference": "Carmina Burana ‘O Fortuna’ opening tritone",
+   "category": "trivia",
+   "relative": true,
+   "id": "h042"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the theme from 'The Simpsons'.",
+   "answerPitches": [
+    "C",
+    "E"
+   ],
+   "reference": "The Simpsons Theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h043"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that start Michael Jackson’s Billie Jean bassline (first two bass notes).",
+   "answerPitches": [
+    "F#",
+    "G#"
+   ],
+   "reference": "Michael Jackson Billie Jean intro bass notes",
+   "category": "trivia",
+   "relative": true,
+   "id": "h044"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two‑note opening of Ligeti’s Musica Ricercata II.",
+   "answerPitches": [
+    "A",
+    "A#"
+   ],
+   "reference": "Ligeti Musical Ricercata II opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h045"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the wide leap opening the first movement of Beethoven’s Piano Sonata No. 9 in E major.",
+   "answerPitches": [
+    "B",
+    "F#"
+   ],
+   "reference": "Opening interval ascending fourths in Beethoven Piano Sonata No. 9",
+   "category": "trivia",
+   "relative": true,
+   "id": "h046"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two‑note motif that launches Beethoven’s Symphony No. 9 first movement.",
+   "answerPitches": [
+    "A",
+    "E"
+   ],
+   "reference": "Beethoven Symphony No. 9 first movement opening fifths",
+   "category": "trivia",
+   "relative": true,
+   "id": "h047"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Ravel’s \"La Valse\" ballet.",
+   "answerPitches": [
+    "F",
+    "A",
+    "D"
+   ],
+   "reference": "Ravel La Valse opening added‑sixth chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h048"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin the eerie shark motif used famously in Jaws.",
+   "answerPitches": [
+    "C",
+    "F#"
+   ],
+   "reference": "Tritone outset in Jaws theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h049"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Handel’s Sarabande as used in Barry Lyndon.",
+   "answerPitches": [
+    "C",
+    "E",
+    "G"
+   ],
+   "reference": "Handel Sarabande opening chord in Barry Lyndon",
+   "category": "trivia",
+   "relative": true,
+   "id": "h050"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the leap that opens Hedwig’s Theme.",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "John Williams – opening leap in Hedwig’s Theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h051"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two-note opening motif of Jaws.",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "John Williams Jaws motif semitone rise",
+   "category": "trivia",
+   "relative": true,
+   "id": "h052"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the quiet open‑string interval that ushers in Beethoven’s Ninth as if tuning up.",
+   "answerPitches": [
+    "A",
+    "E"
+   ],
+   "reference": "First movement of Beethoven Symphony No. 9 open fifths",
+   "category": "trivia",
+   "relative": true,
+   "id": "h053"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Rachmaninoff’s Piano Concerto No. 2 solo piano introduction.",
+   "answerPitches": [
+    "A",
+    "C",
+    "E"
+   ],
+   "reference": "Rachmaninoff Piano Concerto No.2 opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h054"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening harmony of Gershwin’s Rhapsody in Blue.",
+   "answerPitches": [
+    "B♭",
+    "D",
+    "F"
+   ],
+   "reference": "Gershwin Rhapsody in Blue opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h055"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Grieg’s Piano Concerto in A minor (soloist’s entry chord).",
+   "answerPitches": [
+    "A",
+    "C",
+    "E"
+   ],
+   "reference": "Grieg Piano Concerto in A minor opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h056"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the striking opening harmony of a well‑known film hero’s cue.",
+   "answerPitches": [
+    "G",
+    "C",
+    "E"
+   ],
+   "reference": "Williams Superman March opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h057"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Stravinsky’s Symphony of Psalms.",
+   "answerPitches": [
+    "E",
+    "G",
+    "B"
+   ],
+   "reference": "Stravinsky Symphony of Psalms opening chord (the \"Psalms chord\")",
+   "category": "trivia",
+   "relative": true,
+   "id": "h058"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that kick off the Jaws theme.",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "John Williams Jaws theme opening motif",
+   "category": "trivia",
+   "relative": true,
+   "id": "h059"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Jimi Hendrix’s “Purple Haze.”",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "Jimi Hendrix Purple Haze opening tritone interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h060"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening vocal chord of Ode to Joy.",
+   "answerPitches": [
+    "D",
+    "F#",
+    "A"
+   ],
+   "reference": "Beethoven – opening chord of Ode to Joy theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h061"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Beethoven’s Für Elise.",
+   "answerPitches": [
+    "E",
+    "D#"
+   ],
+   "reference": "Beethoven Bagatelle No.25 \"Für Elise\" – opening motif",
+   "category": "trivia",
+   "relative": true,
+   "id": "h062"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two‑note motif that opens the theme from The Good, the Bad and the Ugly.",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "Ennio Morricone – The Good, the Bad and the Ugly (opening two‑note coyote howl)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h063"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin John Williams’ Star Wars main theme.",
+   "answerPitches": [
+    "B",
+    "F"
+   ],
+   "reference": "Star Wars theme opening leap",
+   "category": "trivia",
+   "relative": true,
+   "id": "h064"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of J. S. Bach’s Toccata and Fugue in D minor (organ).",
+   "answerPitches": [
+    "D",
+    "A",
+    "F"
+   ],
+   "reference": "Bach Toccata and Fugue in D minor opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h065"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Rachmaninoff’s Piano Concerto No. 2.",
+   "answerPitches": [
+    "C",
+    "G",
+    "E‑flat"
+   ],
+   "reference": "Rachmaninoff Piano Concerto No.2 opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h066"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Beethoven’s Fifth Symphony.",
+   "answerPitches": [
+    "G",
+    "B"
+   ],
+   "reference": "Beethoven Symphony No.5 opening interval (major third) motif",
+   "category": "trivia",
+   "relative": true,
+   "id": "h067"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the main theme of Citizen Kane (Herrmann’s “power” motive).",
+   "answerPitches": [
+    "C",
+    "F#"
+   ],
+   "reference": "Herrmann Citizen Kane opening tritone motive",
+   "category": "trivia",
+   "relative": true,
+   "id": "h068"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the theme from the James Bond films.",
+   "answerPitches": [
+    "E",
+    "D"
+   ],
+   "reference": "James Bond Theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h069"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Star Wars Leia’s Theme.",
+   "answerPitches": [
+    "D",
+    "A",
+    "F#"
+   ],
+   "reference": "Star Wars Leia Theme opening chord in D major",
+   "category": "trivia",
+   "relative": true,
+   "id": "h070"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the opening interval of Duke Ellington’s “Take the ‘A’ Train.”",
+   "answerPitches": [
+    "G",
+    "C"
+   ],
+   "reference": "Take the A Train opening interval (#IV chord hint)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h071"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two-note opening of Debussy’s Prélude à l’après-midi d’un faune (flute’s first two notes).",
+   "answerPitches": [
+    "C#",
+    "G"
+   ],
+   "reference": "Debussy Prélude à l’apres‑midi d’un faune opening",
+   "category": "trivia",
+   "relative": true,
+   "id": "h072"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two-note motif that begins the iconic Mysterioso Pizzicato (villain theme).",
+   "answerPitches": [
+    "A",
+    "C",
+    "E"
+   ],
+   "reference": "Mysterioso Pizzicato motif",
+   "category": "trivia",
+   "relative": true,
+   "id": "h073"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open the 'Jaws' theme.",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "Jaws Theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h074"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that start Elgar’s Cello Concerto first movement theme (solo cello).",
+   "answerPitches": [
+    "E",
+    "B"
+   ],
+   "reference": "Elgar Cello Concerto opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h075"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of A Hard Day’s Night by The Beatles.",
+   "answerPitches": [
+    "D",
+    "G",
+    "B"
+   ],
+   "reference": "The Beatles – opening chord of “A Hard Day’s Night”",
+   "category": "trivia",
+   "relative": true,
+   "id": "h076"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the initial chord that launches Carmina Burana’s “O Fortuna.”",
+   "answerPitches": [
+    "C",
+    "G",
+    "D"
+   ],
+   "reference": "Orff Carmina Burana opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h077"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of 'Purple Haze' by Jimi Hendrix.",
+   "answerPitches": [
+    "E",
+    "G#",
+    "D"
+   ],
+   "reference": "Purple Haze",
+   "category": "trivia",
+   "relative": true,
+   "id": "h078"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the first chord of The Imperial March (Darth Vader’s Theme).",
+   "answerPitches": [
+    "G",
+    "B♭",
+    "D"
+   ],
+   "reference": "John Williams – opening chord of The Imperial March",
+   "category": "trivia",
+   "relative": true,
+   "id": "h079"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the first chord of Rachmaninov’s Piano Concerto No.2 opening (solo piano).",
+   "answerPitches": [
+    "C#",
+    "E",
+    "G#"
+   ],
+   "reference": "Rachmaninov Piano Concerto No.2 opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h080"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin 'Für Elise'.",
+   "answerPitches": [
+    "E",
+    "F"
+   ],
+   "reference": "Beethoven Für Elise opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h081"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Stravinsky’s Symphony of Psalms (“Psalms chord”).",
+   "answerPitches": [
+    "E",
+    "G",
+    "B"
+   ],
+   "reference": "Stravinsky Symphony of Psalms opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h082"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two‑note opening of Pachelbel’s Canon in D (its very first interval).",
+   "answerPitches": [
+    "D",
+    "A"
+   ],
+   "reference": "Pachelbel’s Canon opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h083"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Gershwin’s Rhapsody in Blue as heard in the orchestral introduction.",
+   "answerPitches": [
+    "B♭",
+    "D",
+    "F"
+   ],
+   "reference": "Gershwin Rhapsody in Blue orchestral opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h084"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the mysterious chord opening Stravinsky’s Symphony of Psalms.",
+   "answerPitches": [
+    "E",
+    "G",
+    "B"
+   ],
+   "reference": "Psalms chord opening Stravinsky Symphony of Psalms",
+   "category": "trivia",
+   "relative": true,
+   "id": "h085"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two‑note bite‑like opening of The Good, the Bad and the Ugly theme.",
+   "answerPitches": [
+    "E",
+    "F#"
+   ],
+   "reference": "Ennio Morricone – opening two‑note motif of The Good, the Bad and the Ugly",
+   "category": "trivia",
+   "relative": true,
+   "id": "h086"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the signature two‑note motif from the opening of the James Bond theme.",
+   "answerPitches": [
+    "E",
+    "F#"
+   ],
+   "reference": "James Bond theme iconic riff",
+   "category": "trivia",
+   "relative": true,
+   "id": "h087"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the leap that begins the main theme of 'Star Wars'.",
+   "answerPitches": [
+    "G",
+    "D"
+   ],
+   "reference": "Star Wars Main Theme",
+   "category": "trivia",
+   "relative": true,
+   "id": "h088"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin the Imperial March melody (G – downward leap then up).",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "John Williams – opening melodic notes of The Imperial March",
+   "category": "trivia",
+   "relative": true,
+   "id": "h089"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes dispatched as threat by The Imperial March opening phrase.",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "John Williams – opening interval of The Imperial March",
+   "category": "trivia",
+   "relative": true,
+   "id": "h090"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of 'Let It Be' by The Beatles.",
+   "answerPitches": [
+    "C",
+    "E",
+    "G"
+   ],
+   "reference": "Let It Be",
+   "category": "trivia",
+   "relative": true,
+   "id": "h091"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that begin Samuel Barber’s Adagio for Strings theme.",
+   "answerPitches": [
+    "B",
+    "F#"
+   ],
+   "reference": "Barber Adagio for Strings opening melodic interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h092"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes of Mysterioso Pizzicato’s opening motif (the “villain” theme).",
+   "answerPitches": [
+    "A",
+    "C"
+   ],
+   "reference": "Mysterioso Pizzicato villain motif opening interval",
+   "category": "trivia",
+   "relative": true,
+   "id": "h093"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of Bernard Herrmann’s Psycho Prelude.",
+   "answerPitches": [
+    "Bb",
+    "F",
+    "A"
+   ],
+   "reference": "Herrmann Psycho Prelude",
+   "category": "trivia",
+   "relative": true,
+   "id": "h094"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the opening interval of Brahms' Lullaby—those two notes that start it.",
+   "answerPitches": [
+    "D",
+    "F"
+   ],
+   "reference": "Brahms Lullaby opening interval (minor third)",
+   "category": "trivia",
+   "relative": true,
+   "id": "h095"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that open Wagner’s Tristan und Isolde Prelude.",
+   "answerPitches": [
+    "F",
+    "G#",
+    "D#"
+   ],
+   "reference": "Wagner Für Tristan und Isolde Prelude",
+   "category": "trivia",
+   "relative": true,
+   "id": "h096"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the two notes that start the main melody of the Pink Panther Theme.",
+   "answerPitches": [
+    "E",
+    "G"
+   ],
+   "reference": "Mancini Pink Panther Theme in E minor",
+   "category": "trivia",
+   "relative": true,
+   "id": "h097"
+  },
+  {
+   "kind": "interval",
+   "prompt": "Sing the opening two-note motif of Beethoven’s Fifth Symphony.",
+   "answerPitches": [
+    "G",
+    "E"
+   ],
+   "reference": "Beethoven Fifth opening motif inverted",
+   "category": "trivia",
+   "relative": true,
+   "id": "h098"
+  },
+  {
+   "kind": "chord",
+   "prompt": "Sing the opening chord of the Superman theme by John Williams.",
+   "answerPitches": [
+    "C",
+    "G",
+    "E"
+   ],
+   "reference": "John Williams Superman March opening chord",
+   "category": "trivia",
+   "relative": true,
+   "id": "h099"
+  }
+ ]
+}

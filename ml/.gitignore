@@ -1,0 +1,11 @@
+# Virtual env
+.venv/
+
+# Generated datasets and downloaded corpora (can be large)
+data/
+corpora/
+
+# Caches
+__pycache__/
+*.pyc
+.mirdata/

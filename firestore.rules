@@ -105,5 +105,68 @@ service cloud.firestore {
         allow delete: if false;
       }
     }
+
+    // ===============================================================
+    // Multiplayer singing game
+    // ===============================================================
+    //
+    // Collection: rooms/{roomId}
+    //   - code:       string   (join code)
+    //   - hostUid:    string   (room owner; only they mutate the room doc)
+    //   - mode:       'noobs'|'pros'|'hackers'
+    //   - status:     'lobby'|'countdown'|'racing'|'finished'
+    //   - target:     number
+    //   - questions:  list     (set at round start)
+    //   - createdAt / startedAt: timestamp
+    //
+    // Subcollection: rooms/{roomId}/players/{uid}  (each player owns their doc)
+    //   - name, isGuest, currentIndex, correctCount, effectiveScore,
+    //     finished, finishMs, joinedAt
+    //
+    // Collection: leaderboard/{autoId}  (world-readable, append-only)
+    //   - uid, name, mode, timeMs, target, createdAt
+    //
+    // Anonymous (guest) users are authenticated, so isAuthenticated() covers them.
+
+    function isRoomHost(roomId) {
+      return isAuthenticated()
+        && get(/databases/$(database)/documents/rooms/$(roomId)).data.hostUid == request.auth.uid;
+    }
+
+    match /rooms/{roomId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.hostUid == request.auth.uid
+        && request.resource.data.code is string
+        && request.resource.data.status in ['lobby', 'countdown', 'racing', 'finished'];
+      // Only the host changes room-level state (status, questions, target).
+      allow update: if isAuthenticated()
+        && resource.data.hostUid == request.auth.uid
+        && request.resource.data.hostUid == resource.data.hostUid;
+      allow delete: if isAuthenticated() && resource.data.hostUid == request.auth.uid;
+
+      match /players/{playerUid} {
+        allow read: if isAuthenticated();
+        // A player may only create/update their OWN entry.
+        allow create, update: if isOwner(playerUid);
+        // A player can leave; the host can remove anyone (e.g. cleanup).
+        allow delete: if isOwner(playerUid) || isRoomHost(roomId);
+      }
+    }
+
+    match /leaderboard/{entryId} {
+      allow read: if true; // global, public leaderboard
+      allow create: if isAuthenticated()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 40
+        && request.resource.data.mode in ['noobs', 'pros', 'hackers']
+        && request.resource.data.timeMs is number
+        && request.resource.data.timeMs > 0
+        && request.resource.data.timeMs <= 86400000
+        && request.resource.data.target is number;
+      allow update, delete: if false;
+    }
   }
 }
