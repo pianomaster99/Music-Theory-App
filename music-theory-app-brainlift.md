@@ -91,3 +91,10 @@ Gamification can help music theory feel less boring, but it cannot just be rando
 * Better leaderboards create achievable success through smaller goals and multiple ways to win.
 #### DOK 2 — Summary
 Competition can improve a music theory app, but the leaderboard must be designed carefully. A single global ranking could discourage beginners. A better system would use friend leaderboards, beginner leagues, personal bests, streaks, and separate competitions for different skills like singing intervals, recognizing chords, or completing theory challenges.
+### Source 6: Simply Piano
+#### DOK 1 — Facts
+* Simply piano use interactive feedback to teach students how to learn piano. 
+* Simply piano helps build mind-muscle connection by listening to student piano playing
+* Simply piano has no multiplayer competition
+#### DOK 2 — Summary
+While Simply Piano interacts with users' piano playing, Simply Piano is recognized as a "meme" in the music community do to its repetitive, boring nature. 
