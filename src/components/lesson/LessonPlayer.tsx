@@ -15,13 +15,6 @@ import { loadLessonProgress, saveLessonProgress } from '@/lib/progress/progress'
 import { recordActivity } from '@/lib/progress/streak'
 import { ReferenceTable } from '@/components/ReferenceTable'
 import { LessonStage } from '@/components/LessonStage'
-import {
-  cancelSpeech,
-  isSpeechEnabled,
-  isSpeechSupported,
-  setSpeechEnabled,
-  speak,
-} from '@/lib/speech'
 import { Mascot, type MascotMood } from './Mascot'
 import { ConceptDemo } from './ConceptDemo'
 import { BuildIntervalView } from './BuildIntervalView'
@@ -47,7 +40,6 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     mood: 'neutral',
   })
 
-  const [speechOn, setSpeechOn] = useState(isSpeechEnabled())
   const [slapToken, setSlapToken] = useState(0)
 
   const step = lesson.steps[stepIndex]
@@ -61,21 +53,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     return !follow || follow.module.id !== here.module.id
   }, [lesson.id, follow])
 
-  // Whenever Pianomaster99 puts text in his bubble, he says it out loud. We
-  // set the bubble and speak together (rather than reacting to message changes)
-  // so identical lines — e.g. the same feedback twice — still get spoken.
+  // Pianomaster99 puts text in his speech bubble.
   const say = (message: string, mood: MascotMood) => {
     setMascot({ message, mood })
-    speak(message)
-  }
-
-  useEffect(() => () => cancelSpeech(), [])
-
-  const toggleSpeech = () => {
-    const next = !speechOn
-    setSpeechEnabled(next)
-    setSpeechOn(next)
-    if (next) speak(mascot.message)
   }
 
   // Persist the learner's place in this lesson.
@@ -129,9 +109,6 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     )
     const msg = defaultMascotMessage(step)
     setMascot({ message: msg, mood: 'neutral' })
-    // On concept steps, read the actual teaching text aloud (not just the short
-    // "read this" bubble), so Pianomaster99 narrates everything he shows.
-    speak(step.kind === 'concept' ? `${step.title}. ${step.body}` : msg)
   }, [step])
 
   const handleResult = (result: ValidationResult, message: string) => {
@@ -150,7 +127,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     }
   }
 
-  // Pianomaster99 reads the hint aloud and shows it in his speech bubble.
+  // Pianomaster99 shows the hint in his speech bubble.
   const handleHint = (text: string) => {
     say(text, 'thinking')
   }
@@ -242,16 +219,6 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
             &larr; Map
           </Link>
           <div className="flex flex-wrap items-center gap-2">
-            {isSpeechSupported() && (
-              <button
-                type="button"
-                onClick={toggleSpeech}
-                className="hover:underline"
-                aria-label={speechOn ? 'Mute tutor voice' : 'Unmute tutor voice'}
-              >
-                {speechOn ? '🔊 Voice' : '🔇 Voice'}
-              </button>
-            )}
             <ReferenceTable />
             <span>
               Step {stepIndex + 1} of {total}

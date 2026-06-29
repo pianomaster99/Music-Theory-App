@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { onSpeaking } from '@/lib/speech'
 import { PianoMascot } from './PianoMascot'
 
 export type MascotMood = 'neutral' | 'happy' | 'thinking'
@@ -15,7 +14,6 @@ export function Mascot({
   slapToken?: number
 }) {
   const [slapping, setSlapping] = useState(false)
-  const [voiceTalking, setVoiceTalking] = useState(false)
   const [estTalking, setEstTalking] = useState(false)
 
   useEffect(() => {
@@ -29,11 +27,8 @@ export function Mascot({
     }
   }, [slapToken])
 
-  // Move the mouth while the tutor is actually speaking.
-  useEffect(() => onSpeaking(setVoiceTalking), [])
-
-  // Fallback: animate the mouth for an estimated duration whenever a new line
-  // appears, so the keyboard "talks" even when the voice is muted.
+  // Animate the mouth for an estimated duration whenever a new line appears, so
+  // the keyboard "talks" as Pianomaster99's message comes in.
   useEffect(() => {
     if (!message) return
     const words = message.trim().split(/\s+/).length
@@ -46,7 +41,7 @@ export function Mascot({
     }
   }, [message])
 
-  const talking = (voiceTalking || estTalking) && !slapping
+  const talking = estTalking && !slapping
 
   const motion = slapping
     ? 'animate-mascot-wrong-dance'
