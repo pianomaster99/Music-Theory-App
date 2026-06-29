@@ -84,3 +84,31 @@ export function matchesAnswer(
     ? matchesUnderTransposition(recent, targetPcs)
     : setEquals(recent, targetPcs)
 }
+
+/**
+ * Whether `accepted` (the notes registered so far, distinct pitch classes) is a
+ * valid PREFIX toward the answer — i.e. it could still grow into a correct set.
+ * For exact answers every accepted pc must be in the target. For relative
+ * answers the accepted set must fit inside some transposition of the target
+ * (so the first note is always OK and each later note must keep a valid shape).
+ * Used to decide whether a freshly sung note is "right so far" or wrong.
+ */
+export function isPartialAnswer(
+  accepted: number[],
+  targetPcs: number[],
+  relative = false,
+): boolean {
+  if (accepted.length === 0) return true
+  if (accepted.length > targetPcs.length) return false
+  const uniq = [...new Set(accepted)]
+  if (uniq.length > targetPcs.length) return false
+  if (!relative) {
+    const target = new Set(targetPcs)
+    return uniq.every((pc) => target.has(pc))
+  }
+  for (let t = 0; t < 12; t++) {
+    const shifted = new Set(targetPcs.map((p) => (p + t) % 12))
+    if (uniq.every((pc) => shifted.has(pc))) return true
+  }
+  return false
+}

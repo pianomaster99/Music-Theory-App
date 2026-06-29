@@ -7,13 +7,9 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import {
   applyExperienceSkips,
-  HAND_SKINS,
-  HAND_SKIN_FILTER,
   saveOnboarding,
   scaleForMinutes,
   type Experience,
-  type HandGender,
-  type HandSkin,
 } from '@/lib/profile'
 import { setQuestionScale } from '@/content/generate'
 
@@ -38,8 +34,6 @@ export default function Onboarding() {
   const [displayName, setDisplayName] = useState(
     profile?.displayName || user?.displayName || '',
   )
-  const [handGender, setHandGender] = useState<HandGender>('male')
-  const [handSkin, setHandSkin] = useState<HandSkin>('light')
   const [dailyMinutes, setDailyMinutes] = useState(20)
   const [experience, setExperience] = useState<Experience>('new')
   const [busy, setBusy] = useState(false)
@@ -54,7 +48,7 @@ export default function Onboarding() {
   if (!user) return <Navigate to="/auth" replace />
   if (profile?.onboarded) return <Navigate to="/map" replace />
 
-  const steps = ['Name', 'Your hand', 'Daily time', 'Experience']
+  const steps = ['Name', 'Daily time', 'Experience']
   const last = steps.length - 1
 
   const finish = async () => {
@@ -62,8 +56,6 @@ export default function Onboarding() {
     try {
       await saveOnboarding(user.uid, {
         displayName: displayName.trim() || 'Explorer',
-        handGender,
-        handSkin,
         dailyMinutes,
         experience,
       })
@@ -116,57 +108,6 @@ export default function Onboarding() {
         )}
 
         {step === 1 && (
-          <div className="space-y-4">
-            <div className="flex justify-center">
-              <img
-                src="/hand/palm.png"
-                alt="Your hand"
-                className="h-32 w-auto"
-                style={{ filter: HAND_SKIN_FILTER[handSkin] }}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Hand</Label>
-              <div className="flex gap-2">
-                {(['male', 'female'] as HandGender[]).map((g) => (
-                  <button
-                    key={g}
-                    type="button"
-                    onClick={() => setHandGender(g)}
-                    className={cn(
-                      'flex-1 rounded-lg border-2 border-ink/40 py-2 capitalize text-ink transition-colors hover:bg-ink/10',
-                      handGender === g && 'bg-ink text-parchment hover:bg-ink',
-                    )}
-                  >
-                    {g}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Skin tone</Label>
-              <div className="flex gap-3">
-                {HAND_SKINS.map((s) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    aria-label={s.label}
-                    onClick={() => setHandSkin(s.id)}
-                    className={cn(
-                      'h-10 w-10 rounded-full border-2 transition-transform',
-                      handSkin === s.id
-                        ? 'scale-110 border-ink'
-                        : 'border-ink/30',
-                    )}
-                    style={{ backgroundColor: s.swatch }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {step === 2 && (
           <div className="space-y-2">
             <Label>How long will you practice each day?</Label>
             <p className="text-sm text-ink-soft">
@@ -191,7 +132,7 @@ export default function Onboarding() {
           </div>
         )}
 
-        {step === 3 && (
+        {step === 2 && (
           <div className="space-y-2">
             <Label>How much theory do you already know?</Label>
             <p className="text-sm text-ink-soft">

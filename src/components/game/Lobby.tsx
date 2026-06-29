@@ -49,12 +49,18 @@ export default function Lobby({
         {queued ? (
           <>
             <h1 className="mt-1 font-display text-3xl text-ink">Finding players…</h1>
-            <div className="my-3 font-display text-6xl text-ink">
-              {lobbyCountdown == null ? '…' : `${lobbyCountdown}s`}
-            </div>
+            {players.length < 2 ? (
+              <div className="my-3 font-display text-2xl text-ink-soft">
+                Waiting for another player…
+              </div>
+            ) : (
+              <div className="my-3 font-display text-6xl text-ink">
+                {lobbyCountdown == null ? '…' : `${lobbyCountdown}s`}
+              </div>
+            )}
             <p className="text-ink-soft">
-              Auto-starting soon. Anyone else queueing for {MODE_LABELS[room.mode]}{' '}
-              joins this race.
+              Quick matches need at least 2 players. Anyone else queueing for{' '}
+              {MODE_LABELS[room.mode]} joins this race.
             </p>
           </>
         ) : (
@@ -112,11 +118,17 @@ export default function Lobby({
             Leave
           </Button>
           {isHost ? (
-            <Button size="lg" onClick={onStart} disabled={starting}>
+            <Button
+              size="lg"
+              onClick={onStart}
+              disabled={starting || (queued && players.length < 2)}
+            >
               {starting
                 ? 'Building questions…'
                 : queued
-                  ? 'Start now'
+                  ? players.length < 2
+                    ? 'Need 2+ players'
+                    : 'Start now'
                   : 'Start race'}
             </Button>
           ) : (

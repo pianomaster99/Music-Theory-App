@@ -9,7 +9,7 @@ import { ensureAudio, playPitches, playThwack } from '@/lib/audio'
 import type { ValidationResult } from '@/lib/content/validate'
 import type { Lesson, Step } from '@/lib/content/types'
 import { isProblemStep } from '@/lib/content/types'
-import { nextLesson } from '@/content/course'
+import { getLessonLocation, nextLesson } from '@/content/course'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { loadLessonProgress, saveLessonProgress } from '@/lib/progress/progress'
 import { recordActivity } from '@/lib/progress/streak'
@@ -53,6 +53,13 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const step = lesson.steps[stepIndex]
   const total = lesson.steps.length
   const follow = useMemo(() => nextLesson(lesson.id), [lesson.id])
+  // Whether finishing this lesson also completes its module (boundary or course
+  // end) — if so, we nudge the learner toward the game to build fluency.
+  const moduleDone = useMemo(() => {
+    const here = getLessonLocation(lesson.id)
+    if (!here) return false
+    return !follow || follow.module.id !== here.module.id
+  }, [lesson.id, follow])
 
   // Whenever Pianomaster99 puts text in his bubble, he says it out loud. We
   // set the bubble and speak together (rather than reacting to message changes)
@@ -194,7 +201,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
             <p className="text-ink-soft">
               You finished &ldquo;{lesson.title}&rdquo;.
             </p>
-            <div className="flex justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               {follow ? (
                 <Button asChild>
                   <Link to={`/lesson/${follow.lesson.id}`}>
@@ -206,6 +213,21 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 <Link to="/map">Back to map</Link>
               </Button>
             </div>
+
+            {moduleDone && (
+              <div className="mt-2 rounded-xl border-2 border-ink/20 bg-parchment-dark/40 p-4">
+                <p className="font-display text-lg text-ink">
+                  🚀 Make it fluent
+                </p>
+                <p className="mt-1 text-sm text-ink-soft">
+                  You just finished a whole module. Race your ears in the Pitch
+                  Rocket Race to lock it in.
+                </p>
+                <Button asChild className="mt-3">
+                  <Link to="/play">Play the game</Link>
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

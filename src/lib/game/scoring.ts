@@ -4,7 +4,7 @@
 // boost that counts as 2. Players finish when their effective score reaches the
 // room target.
 
-export const DEFAULT_TARGET = 10
+export const DEFAULT_TARGET = 5
 
 /** Points a correct answer is worth given the new running correct count. */
 export function pointsForCorrect(newCorrectCount: number): number {

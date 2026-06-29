@@ -6,6 +6,8 @@ interface Props {
   hue?: RocketHue
   /** Animate the exhaust flame (e.g. while racing / on a boost). */
   boosting?: boolean
+  /** Extra-big flame burst (e.g. right after the rocket moves forward). */
+  boost?: boolean
   className?: string
 }
 
@@ -19,7 +21,12 @@ const PALETTE: Record<
 }
 
 // A sleek custom rocket pointing right (the direction of travel on the track).
-export default function RocketShip({ hue = 'other', boosting = false, className }: Props) {
+export default function RocketShip({
+  hue = 'other',
+  boosting = false,
+  boost = false,
+  className,
+}: Props) {
   const uid = useId().replace(/:/g, '')
   const hull = `hull-${uid}`
   const flame = `flame-${uid}`
@@ -28,7 +35,7 @@ export default function RocketShip({ hue = 'other', boosting = false, className 
 
   return (
     <svg
-      viewBox="0 0 72 40"
+      viewBox="-18 0 90 40"
       className={className}
       role="img"
       aria-label="rocket"
@@ -39,9 +46,10 @@ export default function RocketShip({ hue = 'other', boosting = false, className 
           <stop offset="1" stopColor={c.hullBot} />
         </linearGradient>
         <linearGradient id={flame} x1="1" y1="0" x2="0" y2="0">
-          <stop offset="0" stopColor="#fde047" />
-          <stop offset="0.5" stopColor="#fb923c" />
-          <stop offset="1" stopColor="#ef4444" stopOpacity="0.2" />
+          <stop offset="0" stopColor="#fffbeb" />
+          <stop offset="0.35" stopColor="#fde047" />
+          <stop offset="0.7" stopColor="#fb923c" />
+          <stop offset="1" stopColor="#ef4444" stopOpacity="0.1" />
         </linearGradient>
         <radialGradient id={glow} cx="0.5" cy="0.5" r="0.5">
           <stop offset="0" stopColor={c.window} />
@@ -50,18 +58,29 @@ export default function RocketShip({ hue = 'other', boosting = false, className 
         <style>{`
           @keyframes rkflame {
             0%,100% { transform: scaleX(1); opacity: .95 }
-            50% { transform: scaleX(.6); opacity: .7 }
+            50% { transform: scaleX(.55); opacity: .6 }
           }
-          .rk-flame-${uid} { transform-origin: 18px 20px; ${
-            boosting ? `animation: rkflame .18s ease-in-out infinite;` : ''
-          } }
+          .rk-flame-${uid} {
+            transform-origin: 18px 20px;
+            ${boosting ? `animation: rkflame .12s ease-in-out infinite;` : ''}
+          }
         `}</style>
       </defs>
 
-      {/* exhaust flame */}
+      {/* exhaust flame (longer + brighter while boosting) */}
       <g className={`rk-flame-${uid}`}>
-        <path d="M18 14 L2 20 L18 26 Z" fill={`url(#${flame})`} />
-        <path d="M18 16.5 L8 20 L18 23.5 Z" fill="#fffbeb" opacity="0.85" />
+        {boost && (
+          <path d="M18 12 L-16 20 L18 28 Z" fill={`url(#${flame})`} opacity="0.9" />
+        )}
+        <path
+          d={boost ? 'M18 13 L-8 20 L18 27 Z' : 'M18 14 L0 20 L18 26 Z'}
+          fill={`url(#${flame})`}
+        />
+        <path
+          d={boost ? 'M18 16 L-2 20 L18 24 Z' : 'M18 16.5 L8 20 L18 23.5 Z'}
+          fill="#fffbeb"
+          opacity="0.9"
+        />
       </g>
 
       {/* lower + upper fins */}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,6 +22,13 @@ import {
 } from '@/lib/game/types'
 
 const MODES: GameMode[] = ['noobs', 'pros', 'hackers']
+
+// What each mode tests + the module that teaches it (for the "learn first" nudge).
+const MODE_LEARN: Record<GameMode, { content: string; module: string }> = {
+  noobs: { content: 'intervals', module: 'Intervals' },
+  pros: { content: 'triads and chords', module: 'Triads' },
+  hackers: { content: 'chords and seventh chords', module: 'Seventh chords' },
+}
 
 function formatMs(ms: number): string {
   const s = ms / 1000
@@ -195,6 +202,13 @@ export default function GameHome() {
               </button>
             ))}
           </div>
+          <p className="mt-2 text-xs text-ink-soft">
+            New to {MODE_LEARN[mode].content}? Learn them first in the{' '}
+            <Link to="/map" className="font-medium text-ink underline underline-offset-2">
+              {MODE_LEARN[mode].module} module
+            </Link>
+            , then come back to get fluent.
+          </p>
         </div>
 
         {error && <p className="text-sm font-medium text-[#9b3b2f]">{error}</p>}

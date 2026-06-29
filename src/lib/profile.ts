@@ -74,8 +74,8 @@ function isExperience(v: unknown): v is Experience {
 
 export interface OnboardingData {
   displayName: string
-  handGender: HandGender
-  handSkin: HandSkin
+  handGender?: HandGender
+  handSkin?: HandSkin
   dailyMinutes: number
   experience: Experience
 }
@@ -88,8 +88,8 @@ export async function saveOnboarding(
     doc(db, 'users', uid),
     {
       displayName: data.displayName.trim(),
-      handGender: data.handGender,
-      handSkin: data.handSkin,
+      ...(data.handGender ? { handGender: data.handGender } : {}),
+      ...(data.handSkin ? { handSkin: data.handSkin } : {}),
       dailyMinutes: data.dailyMinutes,
       experience: data.experience,
       onboarded: true,

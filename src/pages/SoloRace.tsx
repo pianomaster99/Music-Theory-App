@@ -4,13 +4,15 @@ import { Button } from '@/components/ui/button'
 import { playReferenceA } from '@/lib/audio'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { generateRoundQuestions } from '@/lib/game/questions'
-import { matchesAnswer } from '@/lib/game/answerMatch'
+import { isPartialAnswer, matchesAnswer } from '@/lib/game/answerMatch'
 import { applyCorrect, DEFAULT_TARGET } from '@/lib/game/scoring'
 import { submitTime } from '@/lib/game/leaderboard'
 import { useStableNotes } from '@/lib/game/useStableNotes'
+import { pitchFromMidi, type Pitch } from '@/lib/theory/pitch'
 import { MODE_LABELS, type GameMode, type Player, type Question } from '@/lib/game/types'
 import RocketTrack from '@/components/game/RocketTrack'
 import QuestionCard from '@/components/game/QuestionCard'
+import Celebration from '@/components/game/Celebration'
 
 type Phase = 'setup' | 'countdown' | 'racing' | 'done'
 
@@ -28,18 +30,6 @@ function parseMode(v: string | null): GameMode {
   return v === 'pros' || v === 'hackers' ? v : 'noobs'
 }
 
-function distinctRecent(buf: number[], n: number): number[] {
-  const seen = new Set<number>()
-  const out: number[] = []
-  for (let i = buf.length - 1; i >= 0 && out.length < n; i--) {
-    if (!seen.has(buf[i])) {
-      seen.add(buf[i])
-      out.push(buf[i])
-    }
-  }
-  return out.reverse()
-}
-
 export default function SoloRace() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -50,7 +40,9 @@ export default function SoloRace() {
   const [phase, setPhase] = useState<Phase>('setup')
   const [questions, setQuestions] = useState<Question[]>([])
   const [myIndex, setMyIndex] = useState(0)
-  const [capturedPcs, setCapturedPcs] = useState<number[]>([])
+  const [capturedNotes, setCapturedNotes] = useState<Pitch[]>([])
+  const [wrong, setWrong] = useState(false)
+  const [bonus, setBonus] = useState(false)
   const [justCorrect, setJustCorrect] = useState(false)
   const [prog, setProg] = useState<Prog>({ ...ZERO })
   const [countdown, setCountdown] = useState(COUNTDOWN_S)
@@ -59,7 +51,9 @@ export default function SoloRace() {
   const [busy, setBusy] = useState(false)
 
   const progRef = useRef<Prog>({ ...ZERO })
-  const recentPcsRef = useRef<number[]>([])
+  const acceptedRef = useRef<{ pc: number; midi: number }[]>([])
+  const wrongTimerRef = useRef<number | null>(null)
+  const bonusTimerRef = useRef<number | null>(null)
   const startTimeRef = useRef(0)
   const phaseRef = useRef<Phase>('setup')
   const questionsRef = useRef<Question[]>([])
@@ -74,27 +68,48 @@ export default function SoloRace() {
 
   const name = profile?.displayName || user?.displayName || 'You'
 
+  const flashWrong = useCallback(() => {
+    setWrong(true)
+    if (wrongTimerRef.current) window.clearTimeout(wrongTimerRef.current)
+    wrongTimerRef.current = window.setTimeout(() => setWrong(false), 450)
+  }, [])
+
   const onStableNote = useCallback(
-    ({ pc }: { pc: number; midi: number }) => {
+    ({ pc, midi }: { pc: number; midi: number }) => {
       if (phaseRef.current !== 'racing' || progRef.current.finished) return
       const qs = questionsRef.current
       if (!qs.length) return
       const q = qs[progRef.current.currentIndex % qs.length]
       if (!q) return
 
-      recentPcsRef.current.push(pc)
-      if (recentPcsRef.current.length > 8) recentPcsRef.current.shift()
+      const accepted = acceptedRef.current
+      if (accepted.some((a) => a.pc === pc)) return
 
-      if (matchesAnswer(recentPcsRef.current, q.answerPcs, q.relative)) {
+      const candidate = [...accepted.map((a) => a.pc), pc]
+      if (!isPartialAnswer(candidate, q.answerPcs, q.relative)) {
+        flashWrong()
+        return
+      }
+
+      acceptedRef.current = [...accepted, { pc, midi }]
+      setCapturedNotes(acceptedRef.current.map((a) => pitchFromMidi(a.midi)))
+
+      if (matchesAnswer(candidate, q.answerPcs, q.relative)) {
         const next = applyCorrect(progRef.current, target)
+        const doubleBoost = next.effectiveScore - progRef.current.effectiveScore >= 2
         const currentIndex = progRef.current.currentIndex + 1
         progRef.current = { ...next, currentIndex }
-        recentPcsRef.current = []
+        acceptedRef.current = []
         setProg(progRef.current)
         setMyIndex(currentIndex)
-        setCapturedPcs([])
+        setCapturedNotes([])
         setJustCorrect(true)
         window.setTimeout(() => setJustCorrect(false), 600)
+        if (doubleBoost) {
+          setBonus(true)
+          if (bonusTimerRef.current) window.clearTimeout(bonusTimerRef.current)
+          bonusTimerRef.current = window.setTimeout(() => setBonus(false), 1200)
+        }
         if (next.finished) {
           const ms = Date.now() - startTimeRef.current
           setElapsedMs(ms)
@@ -108,11 +123,9 @@ export default function SoloRace() {
               .catch(() => {})
           }
         }
-      } else {
-        setCapturedPcs(distinctRecent(recentPcsRef.current, q.answerPcs.length))
       }
     },
-    [target, ensureGuest, name, mode],
+    [target, ensureGuest, name, mode, flashWrong],
   )
 
   const mic = useStableNotes({ holdMs: 500, onStableNote })
@@ -130,11 +143,11 @@ export default function SoloRace() {
     // Mic was already started from the Start button (a user gesture) so the
     // AudioContext is running by now; just begin scoring.
     progRef.current = { ...ZERO }
-    recentPcsRef.current = []
+    acceptedRef.current = []
     submittedRef.current = false
     setProg({ ...ZERO })
     setMyIndex(0)
-    setCapturedPcs([])
+    setCapturedNotes([])
     startTimeRef.current = Date.now()
     setPhase('racing')
   }, [])
@@ -191,8 +204,8 @@ export default function SoloRace() {
   const handleSkip = useCallback(() => {
     const currentIndex = progRef.current.currentIndex + 1
     progRef.current = { ...progRef.current, currentIndex }
-    recentPcsRef.current = []
-    setCapturedPcs([])
+    acceptedRef.current = []
+    setCapturedNotes([])
     setMyIndex(currentIndex)
   }, [])
 
@@ -262,6 +275,21 @@ export default function SoloRace() {
         </div>
       )}
 
+      {(phase === 'countdown' || phase === 'racing') && (
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              void mic.stop()
+              navigate('/play')
+            }}
+          >
+            Quit
+          </Button>
+        </div>
+      )}
+
       {phase !== 'setup' && (
         <RocketTrack players={[mePlayer]} target={target} myUid={mePlayer.uid} />
       )}
@@ -283,7 +311,9 @@ export default function SoloRace() {
             question={question}
             index={myIndex}
             total={len}
-            capturedPcs={capturedPcs}
+            capturedNotes={capturedNotes}
+            wrong={wrong}
+            bonus={bonus}
             holdProgress={mic.holdProgress}
             reading={mic.reading}
             level={mic.level}
@@ -294,22 +324,31 @@ export default function SoloRace() {
       )}
 
       {phase === 'done' && (
-        <div className="rounded-2xl border-2 border-emerald-500 bg-parchment/60 p-8 text-center">
-          <h2 className="font-display text-4xl text-ink">Finished!</h2>
-          <p className="mt-2 text-ink-soft">
-            Your time:{' '}
-            <span className="font-mono text-ink">{(elapsedMs / 1000).toFixed(1)}s</span>{' '}
-            · submitted to the {MODE_LABELS[mode]} leaderboard.
-          </p>
-          <div className="mt-5 flex justify-center gap-3">
-            <Button variant="ghost" onClick={() => navigate('/play')}>
-              Back to lobby
-            </Button>
-            <Button size="lg" onClick={handlePlayAgain}>
-              Play again
-            </Button>
+        <>
+          <Celebration />
+          <div className="rounded-2xl border-2 border-orange-500 bg-gradient-to-b from-amber-100/70 to-parchment/60 p-8 text-center">
+            <div className="text-6xl">{'\uD83C\uDFC6'}</div>
+            <h2 className="mt-1 font-display text-4xl text-ink">Congrats! 🎉</h2>
+            <p className="mt-2 text-ink-soft">You finished the {MODE_LABELS[mode]} race.</p>
+            <div className="mx-auto mt-4 w-fit rounded-xl bg-parchment-dark px-6 py-3">
+              <div className="text-xs uppercase tracking-widest text-ink-soft">your time</div>
+              <div className="font-mono text-4xl text-ink">
+                {(elapsedMs / 1000).toFixed(1)}s
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-ink-soft">
+              Submitted to the {MODE_LABELS[mode]} leaderboard.
+            </p>
+            <div className="mt-5 flex justify-center gap-3">
+              <Button variant="ghost" onClick={() => navigate('/play')}>
+                Back to lobby
+              </Button>
+              <Button size="lg" onClick={handlePlayAgain}>
+                Play again
+              </Button>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   )

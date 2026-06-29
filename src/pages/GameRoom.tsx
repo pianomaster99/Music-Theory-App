@@ -17,10 +17,11 @@ import {
   updatePlayer,
 } from '@/lib/game/room'
 import { generateRoundQuestions } from '@/lib/game/questions'
-import { matchesAnswer } from '@/lib/game/answerMatch'
+import { isPartialAnswer, matchesAnswer } from '@/lib/game/answerMatch'
 import { applyCorrect } from '@/lib/game/scoring'
 import { submitTime } from '@/lib/game/leaderboard'
 import { useStableNotes } from '@/lib/game/useStableNotes'
+import { pitchFromMidi, type Pitch } from '@/lib/theory/pitch'
 import type { Player, Room, RoomStatus } from '@/lib/game/types'
 import RocketTrack from '@/components/game/RocketTrack'
 import QuestionCard from '@/components/game/QuestionCard'
@@ -45,18 +46,6 @@ const ZERO: LocalProgress = {
   finishMs: null,
 }
 
-function distinctRecent(buf: number[], n: number): number[] {
-  const seen = new Set<number>()
-  const out: number[] = []
-  for (let i = buf.length - 1; i >= 0 && out.length < n; i--) {
-    if (!seen.has(buf[i])) {
-      seen.add(buf[i])
-      out.push(buf[i])
-    }
-  }
-  return out.reverse()
-}
-
 export default function GameRoom() {
   const { roomId } = useParams<{ roomId: string }>()
   const navigate = useNavigate()
@@ -74,11 +63,16 @@ export default function GameRoom() {
   // Local race state (authoritative for my own rocket; avoids double-counting
   // before the Firestore snapshot round-trips).
   const [myIndex, setMyIndex] = useState(0)
-  const [capturedPcs, setCapturedPcs] = useState<number[]>([])
+  const [capturedNotes, setCapturedNotes] = useState<Pitch[]>([])
+  const [wrong, setWrong] = useState(false)
+  const [bonus, setBonus] = useState(false)
   const [justCorrect, setJustCorrect] = useState(false)
 
   const progressRef = useRef<LocalProgress>({ ...ZERO })
-  const recentPcsRef = useRef<number[]>([])
+  // Notes registered toward the current question (correct-so-far).
+  const acceptedRef = useRef<{ pc: number; midi: number }[]>([])
+  const wrongTimerRef = useRef<number | null>(null)
+  const bonusTimerRef = useRef<number | null>(null)
   const roomRef = useRef<Room | null>(null)
   const submittedRef = useRef(false)
   const prevStatusRef = useRef<RoomStatus | null>(null)
@@ -87,6 +81,7 @@ export default function GameRoom() {
   const seatedRef = useRef(false)
   const isHostRef = useRef(false)
   const startedOnceRef = useRef(false)
+  const playerCountRef = useRef(0)
 
   const myUid = user?.uid ?? null
   const me = useMemo(
@@ -107,6 +102,9 @@ export default function GameRoom() {
     seatedRef.current = seated
   }, [seated])
   useEffect(() => {
+    playerCountRef.current = players.length
+  }, [players])
+  useEffect(() => {
     isHostRef.current = isHost
   }, [isHost])
 
@@ -125,10 +123,10 @@ export default function GameRoom() {
       if (r && status === 'countdown' && prev !== 'countdown') {
         // New round starting: reset my progress and run the local countdown.
         progressRef.current = { ...ZERO }
-        recentPcsRef.current = []
+        acceptedRef.current = []
         submittedRef.current = false
         setMyIndex(0)
-        setCapturedPcs([])
+        setCapturedNotes([])
         if (myUidRef.current && seatedRef.current) {
           void resetMyProgress(roomId, myUidRef.current)
         }
@@ -179,9 +177,15 @@ export default function GameRoom() {
     })()
   }, [roomId, room, seated, user, profile])
 
+  const flashWrong = useCallback(() => {
+    setWrong(true)
+    if (wrongTimerRef.current) window.clearTimeout(wrongTimerRef.current)
+    wrongTimerRef.current = window.setTimeout(() => setWrong(false), 450)
+  }, [])
+
   // ----- stable-note answer handling -----
   const onStableNote = useCallback(
-    ({ pc }: { pc: number; midi: number }) => {
+    ({ pc, midi }: { pc: number; midi: number }) => {
       const r = roomRef.current
       if (!r || r.status !== 'racing') return
       if (progressRef.current.finished) return
@@ -190,20 +194,35 @@ export default function GameRoom() {
       const q = r.questions[progressRef.current.currentIndex % len]
       if (!q) return
 
-      recentPcsRef.current.push(pc)
-      if (recentPcsRef.current.length > 8) recentPcsRef.current.shift()
+      const accepted = acceptedRef.current
+      if (accepted.some((a) => a.pc === pc)) return // already registered this note
 
-      if (matchesAnswer(recentPcsRef.current, q.answerPcs, q.relative)) {
-        // Correct! advance.
+      const candidate = [...accepted.map((a) => a.pc), pc]
+      if (!isPartialAnswer(candidate, q.answerPcs, q.relative)) {
+        flashWrong() // wrong note: shake the staff, don't register it
+        return
+      }
+
+      // Correct note so far: register it on the staff.
+      acceptedRef.current = [...accepted, { pc, midi }]
+      setCapturedNotes(acceptedRef.current.map((a) => pitchFromMidi(a.midi)))
+
+      if (matchesAnswer(candidate, q.answerPcs, q.relative)) {
         const next = applyCorrect(progressRef.current, r.target)
+        const doubleBoost = next.effectiveScore - progressRef.current.effectiveScore >= 2
         const currentIndex = progressRef.current.currentIndex + 1
         const finishMs = next.finished ? Date.now() - (r.startedAt ?? Date.now()) : null
         progressRef.current = { ...next, currentIndex, finishMs }
-        recentPcsRef.current = []
-        setCapturedPcs([])
+        acceptedRef.current = []
+        setCapturedNotes([])
         setMyIndex(currentIndex)
         setJustCorrect(true)
         window.setTimeout(() => setJustCorrect(false), 600)
+        if (doubleBoost) {
+          setBonus(true)
+          if (bonusTimerRef.current) window.clearTimeout(bonusTimerRef.current)
+          bonusTimerRef.current = window.setTimeout(() => setBonus(false), 1200)
+        }
         if (roomId && myUid) {
           void updatePlayer(roomId, myUid, {
             correctCount: next.correctCount,
@@ -213,11 +232,9 @@ export default function GameRoom() {
             currentIndex,
           })
         }
-      } else {
-        setCapturedPcs(distinctRecent(recentPcsRef.current, q.answerPcs.length))
       }
     },
-    [roomId, myUid],
+    [roomId, myUid, flashWrong],
   )
 
   const mic = useStableNotes({ holdMs: 500, onStableNote })
@@ -277,9 +294,13 @@ export default function GameRoom() {
     if (!room?.queued || room.status !== 'lobby' || !room.autoStartAt) return
     const at = room.autoStartAt
     const id = window.setInterval(() => {
+      // Quick match must not start solo: require at least 2 players. While there
+      // is only one, hold (show "waiting"); once a second joins, the countdown
+      // shows and the host launches at zero.
+      const enough = playerCountRef.current >= 2
       const remain = Math.max(0, Math.ceil((at - Date.now()) / 1000))
-      setLobbyCountdown(remain)
-      if (remain <= 0) {
+      setLobbyCountdown(enough ? remain : null)
+      if (enough && remain <= 0) {
         window.clearInterval(id)
         if (isHostRef.current && !startedOnceRef.current) {
           startedOnceRef.current = true
@@ -295,8 +316,8 @@ export default function GameRoom() {
     if (!r || !roomId || !myUid) return
     const currentIndex = progressRef.current.currentIndex + 1
     progressRef.current = { ...progressRef.current, currentIndex }
-    recentPcsRef.current = []
-    setCapturedPcs([])
+    acceptedRef.current = []
+    setCapturedNotes([])
     setMyIndex(currentIndex)
     void updatePlayer(roomId, myUid, { currentIndex })
   }, [roomId, myUid])
@@ -414,6 +435,12 @@ export default function GameRoom() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-5 px-4 py-6">
+      <div className="flex justify-end">
+        <Button variant="ghost" size="sm" onClick={handleLeave}>
+          Quit to lobby
+        </Button>
+      </div>
+
       <RocketTrack players={players} target={room.target} myUid={myUid} />
 
       {mic.status !== 'listening' && (
@@ -446,7 +473,9 @@ export default function GameRoom() {
             question={question}
             index={myIndex}
             total={len}
-            capturedPcs={capturedPcs}
+            capturedNotes={capturedNotes}
+            wrong={wrong}
+            bonus={bonus}
             holdProgress={mic.holdProgress}
             reading={mic.reading}
             level={mic.level}
